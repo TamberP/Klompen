@@ -6,6 +6,7 @@ use warnings;
 use HTML::Tiny;
 use Text::Markdown 'markdown';
 
+use Klompen qw(output_directory post_extension);
 use Klompen::Site;
 
 my $h = HTML::Tiny->new( 'mode' => 'html' );
@@ -44,7 +45,8 @@ sub generate {
 
 
     # Now, output what we can, because we must.
-    print $h->html([
+    open($post_fh, '>:encoding(UTF-8)', post_output_path($metadata)) || die "Could not write out to " . post_output_path($metadata);
+    print $post_fh $h->html([
 	$h->head([
 	    $h->title($h->entity_encode($metadata->{'title'})),
 	    $h->style ({'type' => 'text/css', 'media' => 'screen'},
@@ -100,4 +102,16 @@ sub linkify_tags {
     undef $i;
     return join(', ', @tagl);
 }
+
+sub post_output_path {
+    # Produces the output path for the post in question.
+    # %outputdir%/%pathspec%/%postid%.%ext%
+    # (Extension may not be .htm(l))
+    my $metadata = shift;
+    my $id = $metadata->{'id'};
+    $id =~ s/^\s//;
+    $id =~ s/\s$//;
+    return Klompen::output_directory() . "/archives/$id" . Klompen::post_extension();
+}
+
 1;
