@@ -49,8 +49,7 @@ sub generate {
     print $post_fh $h->html([
 	$h->head([
 	    $h->title($h->entity_encode($metadata->{'title'})),
-	    $h->style ({'type' => 'text/css', 'media' => 'screen'},
-		       '@import url( http://furryhelix.co.uk/wp-content/themes/tambk/style.css );'),
+	    $h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 'media' => 'screen', 'href' => Klompen::stylesheet_url}),
 		 ]),
 	$h->body([
 	    # We'd include include/header.txt here, I think.

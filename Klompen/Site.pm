@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use HTML::Tiny;
+use JSON;
 
 sub sidebar_generate {
     my $h = shift;
@@ -13,6 +14,7 @@ sub sidebar_generate {
     sidebar_category_list($h),
     $h->h1({'id' => 'links'}, "Links"),
     sidebar_links_list($h),
+    # Include include/sidebar.txt here, too.
 }
 
 sub sidebar_category_list {
@@ -26,12 +28,18 @@ sub sidebar_category_list {
 }
 
 sub sidebar_links_list {
+    # Create the list of links on the sidebar.
     my $h = shift;
+
+    my $src;
+    foreach(Klompen::links_list){
+	$src = $src . $h->li($h->a({
+	    'title' => $h->entity_encode($_->{'title'}),
+	    'href' => $_->{'href'}}, 
+	    $h->entity_encode($_->{'name'})));
+    };
     $h->ul([
-	$h->li($h->a("Links")),
-	$h->li($h->a("Listed")),
-	$h->li($h->a("Here")),
-	   ]);
+	$src]);
 }
 
 1;
