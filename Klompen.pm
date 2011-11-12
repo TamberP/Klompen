@@ -3,6 +3,7 @@ package Klompen;
 use utf8;
 use strict;
 use warnings;
+use JSON qw(decode_json encode_json);
 
 # Default data
 our $config = {
@@ -12,6 +13,10 @@ our $config = {
 	'source_dir' => '',
     },
     'links' => [],
+};
+
+my $_state = {
+    'id'   => 0,
 };
 
 sub list_available_posts {
@@ -45,6 +50,54 @@ sub stylesheet_url {
 sub links_list {
     # Returns the list of links to be added to the sidebar.
     return @{$config->{'links'}};
+}
+
+# Read in our little generated file that lets us maintain our state
+# across runs. (Contains things like the highest ID seen, so we can
+# autoincrement it for newer non-ID'd posts, etc.)
+sub read_state {
+    my $stateH;
+    open($stateH, '<:encoding(UTF-8)', "state.jsn") || return -1;
+    local $/=undef;
+    my $state = <$stateH>;
+    close($stateH);
+    $state = decode_json($state);
+}
+
+# Save our state. It's not the end of the world if we can't, though.
+sub write_state {
+    my $stateH;
+    open($stateH, '>:encoding(UTF-8)', "state.jsn") || printf "Can't write state. (state.jsn)\n";
+    print $stateH encode_json($_state);
+    close($stateH);
+}
+
+sub next_id {
+    # Get the next (i.e. highest + 1) post-ID.
+    return ($_state->{'id'} + 1);
+}
+
+# If the current ID is higher than the stored one, set the latter to
+# the former.
+sub read_id {
+    my $id = shift;
+    if($id > $_state->{'id'}){
+	$_state->{'id'} = $id;
+    }
+}
+
+sub write_id {
+    # Add/update the ID to the given post.
+    my $path = shift;
+    my $id   = shift;
+    my $postH;
+    open($postH, '>>:encoding(UTF-8)', $path);
+    # Scoot to the beginning of the file.
+    seek($postH, 0, 0);
+    # Insert the ID.
+    print $postH, "ID: $id\n";
+    # And we're all done, hopefully :D
+    close($postH);
 }
 
 1;

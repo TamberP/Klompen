@@ -41,8 +41,17 @@ sub generate {
 	close($post_fh);
     }
 
-    die "Augh! No article source!?" if(!defined($article_src));
+    if(!defined($article_src)){
+	print "Post $path is blank!";
+	return -1;
+    }
 
+    if(!defined($metadata->{'id'})){
+	$metadata->{'id'} = Klompen::next_id;
+	Klompen::write_id($path, $metadata->{'id'});
+    } else {
+	Klompen::read_id($metadata->{'id'});
+    }
 
     # Now, output what we can, because we must.
     open($post_fh, '>:encoding(UTF-8)', post_output_path($metadata)) || die "Could not write out to " . post_output_path($metadata);

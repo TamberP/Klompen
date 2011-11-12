@@ -41,8 +41,12 @@ my $config;
     $Klompen::config = decode_json($config_jsn);
 }
 
+Klompen::read_state;
+
 print "Attempting to generate all posts in source directory " . Klompen->source_directory() . "\n";
 foreach(Klompen::list_available_posts()){
     print "Generating: $_ \n";
     Klompen::Post::generate(Klompen->source_directory() . $_);
 }
+
+Klompen::write_state;
