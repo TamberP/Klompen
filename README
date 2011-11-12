@@ -1,0 +1,39 @@
+# Klompen
+
+Klompen is a static blog generation engine, with minimal dependencies.
+(So far, only HTML::Tiny and JSON)
+
+## Configuration
+
+Configuration is per-blog, with the settings pulled from klompen.cfg;
+a mostly self-explanatory JSON file with the following sections:
+
+### posts
+
+* **extension**: the file extension to use on the output files
+* **output_dir**: Directory to create the output files in. **must already exist**
+* **source_dir**: Directory that will be searched for source files. (*.txt)
+* **stylesheet**: URL of the stylesheet you want to use.
+
+### links
+
+This part of the config is an array of links, which will be added to
+the 'links' section of the output page's sidebar.
+
+## Using
+
+To use Klompen, one writes one's posts in the source directory; in
+plain-text (UTF-8, preferably), using the header to provide
+information such as the post's title, date of publication, the list of
+tags/categories (comma separated) and the post's ID (This line will be
+automatically added, if it is not manually inserted. However, one can
+control the post's ID by setting it manually, which may be useful to
+some users.)
+
+Please see the article template (doc/article_template) for the header.
+
+Then, when one wants to publish/update one's posts; run ./klompen
+(After modifying the configuration to point to your posts' source
+directory, and the directory you wish to output to, of course.)  and
+every post in the source directory will be converted into a HTML page
+in the output directory.
