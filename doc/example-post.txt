@@ -1,0 +1,30 @@
+Title: Welcome to Klompen
+Author: Tamber <tamber@furryhelix.co.uk>
+Tags: Example,documentation, post
+Date: 2011-11-11T23:29:32+00:00
+ID: 1
+--text follows this line--
+
+This is an example post for Klompen. Above this text in the source
+file is the metadata header (Everything before --text follows this
+line--), with various pieces of information about this post.
+
+Everything from the metadata-end line is the post itself, in Markdown
+formatting; which is transformed into your blog output. The post ID
+(ID in the metadata header) is meant to be a unique identifier for
+each post; if a later post has the same ID, the earlier output is
+overwritten.
+
+## TODO
+
+* ID autogeneration + writeback
+* Automatic output folder creation
+* Date parsing
+  - Multiple date lines, one for each time an edit is made?
+* Default tags
+* Archive pages
+  - Monthly archives ($outputdir/archives/$year/$month/index{,2,3,etc}.htm)
+  - Yearly archives  ($outputdir/archives/$year/index.htm)
+  - Tag archives     ($outputdir/archives/$tag/index.htm)
+* An emacs mode (Like weblogger.el?) for easy page adding, updating,
+  etc. (This could be used to automatically add IDs to pages?)
