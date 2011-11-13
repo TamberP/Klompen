@@ -107,4 +107,13 @@ sub write_id {
 sub date_format {
     return $config->{'date_display'};
 }
+
+sub site_name {
+    return $config->{'site_name'};
+}
+
+sub base_url {
+    return $config->{'base_url'};
+}
+
 1;

@@ -26,6 +26,7 @@ use File::Path qw(make_path);
 use Klompen;
 use Klompen::Post;
 use Klompen::Site;
+use Klompen::Archive;
 
 # Read configuration file
 my $config;
@@ -51,5 +52,8 @@ foreach(Klompen::list_available_posts()){
     print "Generating: $_ \n";
     Klompen::Post::generate(Klompen->source_directory() . $_);
 }
+
+# Generate the archive page.
+Klompen::Archive::generate;
 
 Klompen::write_state;
