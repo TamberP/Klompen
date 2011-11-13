@@ -66,6 +66,7 @@ sub generate {
 	$h->head([
 	    $h->title($h->entity_encode($metadata->{'title'})),
 	    $h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 'media' => 'screen', 'href' => Klompen::stylesheet_url}),
+	    $h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
 		 ]),
 	$h->body([
 	    # We'd include include/header.txt here, I think.

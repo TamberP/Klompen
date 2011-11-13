@@ -28,6 +28,7 @@ sub generate {
 
     print $postH $h->html([
 	$h->head([
+	    $h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
 	    $h->title(Klompen->site_name . " archive"),
 	    $h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 
 		       'media' => 'screen', 'href' => Klompen->stylesheet_url})
