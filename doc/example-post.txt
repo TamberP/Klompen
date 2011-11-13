@@ -18,7 +18,7 @@ overwritten.
 ## TODO
 
 * ID autogeneration + writeback
-* Automatic output folder creation
+* [DONE 2011-11-13]Automatic output folder creation
 * Date parsing
   - Multiple date lines, one for each time an edit is made?
 * Default tags

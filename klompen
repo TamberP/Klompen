@@ -22,7 +22,7 @@ use strict;
 use warnings;
 
 use JSON qw(decode_json encode_json);
-
+use File::Path qw(make_path);
 use Klompen;
 use Klompen::Post;
 use Klompen::Site;
@@ -44,6 +44,9 @@ my $config;
 Klompen::read_state;
 
 print "Attempting to generate all posts in source directory " . Klompen->source_directory() . "\n";
+# Create directory tree
+make_path(Klompen->output_directory(), Klompen->output_directory() . "/archives/");
+# Generate all the things!
 foreach(Klompen::list_available_posts()){
     print "Generating: $_ \n";
     Klompen::Post::generate(Klompen->source_directory() . $_);

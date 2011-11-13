@@ -1,7 +1,7 @@
 # Klompen
 
 Klompen is a static blog generation engine, with minimal dependencies.
-(So far, only HTML::Tiny and JSON)
+(So far, only HTML::Tiny, JSON, File::Path)
 
 ## Configuration
 
