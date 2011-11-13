@@ -62,7 +62,7 @@ sub read_state {
     local $/=undef;
     my $state = <$stateH>;
     close($stateH);
-    $state = decode_json($state);
+    $_state = decode_json($state);
 }
 
 # Save our state. It's not the end of the world if we can't, though.
@@ -75,7 +75,8 @@ sub write_state {
 
 sub next_id {
     # Get the next (i.e. highest + 1) post-ID.
-    return ($_state->{'id'} + 1);
+    $_state->{'id'} += 1;
+    return ($_state->{'id'});
 }
 
 # If the current ID is higher than the stored one, set the latter to
