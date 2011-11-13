@@ -5,7 +5,7 @@ use warnings;
 
 use HTML::Tiny;
 use Text::Markdown 'markdown';
-use Date::Parse qw(strptime);
+use Date::Parse qw(strptime str2time);
 use POSIX qw(strftime);
 use Klompen qw(output_directory post_extension);
 use Klompen::Site;
@@ -51,8 +51,14 @@ sub generate {
 	$metadata->{'id'} = Klompen::next_id;
 	Klompen::write_id($path, $metadata->{'id'});
     } else {
+	$metadata->{'id'} =~ s/^\s//;
+	$metadata->{'id'} =~ s/\s$//;
 	Klompen::read_id($metadata->{'id'});
     }
+
+    Klompen::Archive::push($metadata->{'id'},
+    Date::Parse::str2time($metadata->{'date'}), $metadata->{'title'},
+    $metadata->{'author'});
 
     # Now, output what we can, because we must.
     open($post_fh, '>:encoding(UTF-8)', post_output_path($metadata)) || die "Could not write out to " . post_output_path($metadata);
