@@ -91,14 +91,16 @@ sub write_id {
     # Add/update the ID to the given post.
     my $path = shift;
     my $id   = shift;
-    my $postH;
-    open($postH, '>>:encoding(UTF-8)', $path);
-    # Scoot to the beginning of the file.
-    seek($postH, 0, 0);
-    # Insert the ID.
-    print $postH, "ID: $id\n";
-    # And we're all done, hopefully :D
-    close($postH);
+    open(postIN, '<:encoding(UTF-8)', $path);
+    open(postOUT, '>:encoding(UTF-8)', $path . ".new");
+    # Prepend the new ID to the top of the file.
+    print postOUT "ID: $id\n";
+    while(<postIN>){
+	print postOUT $_;
+    }
+    close(postIN);
+    close(postOUT);
+    rename "$path.new","$path";
 }
 
 sub date_format {
