@@ -53,14 +53,14 @@ sub create_links {
     my $str = '';
     foreach(@posts){
 	{
-	    my $postdate = @{localtime($_->{'date'})}[4];
+	    my @postdate = localtime($_->{'date'});
 	    # If the month of this post is different to the last one
 	    # we saw, print a nice little header to separate the
 	    # posts.
 	    # e.g. "Posts for November, 2011"
-	    if($postdate != $last_month){
+	    if($postdate[4] != $last_month){
 		$str = $str . $h->h2("Posts for " . strftime("%B, %Y", localtime($_->{'date'})));
-		$last_month = $postdate;		       
+		$last_month = $postdate[4];		       
 	    }
 	}
 	$str = $str . $h->tag('a',
