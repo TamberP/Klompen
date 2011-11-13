@@ -11,6 +11,7 @@ our $config = {
 	'extension' => '.htm',
 	'output_dir' => 'test',
 	'source_dir' => '',
+	'date_display' => "%a %e/%m/%y @ %R",
     },
     'links' => [],
 };
@@ -100,4 +101,7 @@ sub write_id {
     close($postH);
 }
 
+sub date_format {
+    return $config->{'date_display'};
+}
 1;
