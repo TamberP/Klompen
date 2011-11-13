@@ -69,6 +69,7 @@ sub create_links {
 				   'title' => "Read &quot;" . $h->entity_encode($_->{'title'}) . 
 				   "&quot;."},
 			      $h->entity_encode($_->{'title'}));
+	$str = $str . $h->br();
     }
     return $str;
 }
