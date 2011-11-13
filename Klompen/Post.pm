@@ -5,7 +5,7 @@ use warnings;
 
 use HTML::Tiny;
 use Text::Markdown 'markdown';
-
+use Date::Parse qw(strptime);
 use Klompen qw(output_directory post_extension);
 use Klompen::Site;
 
@@ -53,6 +53,11 @@ sub generate {
 	Klompen::read_id($metadata->{'id'});
     }
 
+    #    0       1     2     3     4            5             6
+    # second, minute, hour, day, month, years since 1900, GMT offset
+    my @date = strptime($metadata->{'date'});
+
+
     # Now, output what we can, because we must.
     open($post_fh, '>:encoding(UTF-8)', post_output_path($metadata)) || die "Could not write out to " . post_output_path($metadata);
     print $post_fh $h->html([
@@ -68,7 +73,7 @@ sub generate {
 			$h->span({'id' => 'post-tags'}, linkify_tags($metadata->{'tags'})) . " by " . 
 			$h->span({'id' => 'post-author'}, linkify_author($metadata->{'author'})),
 			$h->br(),
-			$h->span({'id' => 'post-date'}, $h->entity_encode($metadata->{'date'})),
+			$h->span({'id' => 'post-date'}, $h->entity_encode(($date[5] + 1900) . "/$date[4]/$date[3] \@ $date[2]:$date[1]")),
 			]),
 	    $h->div({'id' => 'content'}, markdown($article_src)),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
