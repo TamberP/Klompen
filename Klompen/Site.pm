@@ -23,11 +23,13 @@ sub sidebar_category_list {
     my @tag_l = Klompen::Archive->tag_list();
     my @rslt;
     foreach my $tag (@tag_l){
-	push @rslt, $h->tag('a',
-		    {'href' => Klompen->tag_url() . $h->url_encode(lc($tag)) . 
-			 Klompen->post_extension(),
-		     'title' => 'See all posts in category "' .
-		     $h->entity_encode($tag) . '"'}, $h->entity_encode($tag));
+	push @rslt, $h->li(
+	    $h->tag('a', 
+		    {'href' => Klompen->tag_url() . 
+			 $h->url_encode(lc($tag)) .  Klompen->post_extension(),
+			 'title' => 'See all posts in category "' .
+			 $h->entity_encode($tag) . '"'}, 
+		    $h->entity_encode($tag)));
     }
     return $h->ul([@rslt]);
 }
