@@ -70,7 +70,7 @@ sub generate_tag_archive {
     my $fileH;
     foreach my $tag (keys %{$tags}){
 	# This gives us each tag in turn.
-	my @posts = sort { $b->{'date'} cmp $a->{'date'} } @{$tag};
+	my @posts = sort { $b->{'date'} cmp $a->{'date'} } @{$tags->{$tag}};
 	open($fileH, '>:encoding(UTF-8)',
 	     Klompen->tag_path . "/$tag" . Klompen->post_extension);
 	print $fileH $h->html([ 
