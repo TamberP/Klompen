@@ -94,7 +94,7 @@ sub linkify_author {
     $author[0] =~ s/^\s//g;
     $author[0] =~ s/\s$//g;
     return $h->tag('a',
-		   {'href'  => '/author/' . lc($h->url_encode($author[0])),
+		   {'href'  => Klompen->base_url() . '/author/' . lc($h->url_encode($author[0])) . Klompen->post_extension(),
 		    'title' => "See " . $h->entity_encode($author[0]) . "'s profile page."},
 		   $h->entity_encode($author[0]));
 }
