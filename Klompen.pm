@@ -45,7 +45,7 @@ sub output_directory {
 }
 
 sub stylesheet_url {
-    return $config->{'posts'}->{'stylesheet'};
+    return $config->{'base_url'} . $config->{'posts'}->{'stylesheet'};
 }
 
 sub links_list {
@@ -117,6 +117,6 @@ sub base_url {
 }
 
 sub tag_path {
-    return $config->{'posts'}->{'tag_path'};
+    return $config->{'base_url'} . $config->{'posts'}->{'tag_path'};
 }
 1;
