@@ -24,7 +24,7 @@ sub tag_push {
 
     $tag =~ s/^\s+//;
     $tag =~ s/\s+$//;
-    push $tags->{lc($tag)}, {'id' => $id, 'date' => $ts,
+    push @{$tags->{lc($tag)}}, {'id' => $id, 'date' => $ts,
 			     'title' => $title, 'author' => $author};
 }
 
