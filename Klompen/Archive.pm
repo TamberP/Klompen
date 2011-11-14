@@ -83,7 +83,7 @@ sub create_links {
 				   'title' => "Read &quot;" . $h->entity_encode($_->{'title'}) . 
 				   "&quot;."},
 			      $h->entity_encode($_->{'title'}));
-	$str = $str . "&nbsp&nbps" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
+	$str = $str . "&nbsp&nbsp" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
 	$str = $str . $h->br();
     }
     return $str;
