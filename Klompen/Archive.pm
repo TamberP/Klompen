@@ -111,7 +111,7 @@ sub create_links {
 	    }
 	}
 	$str = $str . $h->tag('a',
-			      {'href' => Klompen->base_url() . '/archives/' . 
+			      {'href' => Klompen->base_url() . 'archives/' . 
 				   $_->{'id'} . Klompen->post_extension(),
 				   'title' => "Read &quot;" . $h->entity_encode($_->{'title'}) . 
 				   "&quot;."},

@@ -117,6 +117,10 @@ sub base_url {
 }
 
 sub tag_path {
+    return $config->{'posts'}->{'output_dir'} . "/" . $config->{'posts'}->{'tag_path'};
+}
+
+sub tag_url {
     return $config->{'base_url'} . $config->{'posts'}->{'tag_path'};
 }
 1;
