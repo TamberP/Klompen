@@ -55,5 +55,7 @@ foreach(Klompen::list_available_posts()){
 
 # Generate the archive page.
 Klompen::Archive::generate;
+# Generate the tag archive pages.
+Klompen::Archive::generate_tag_archive;
 
 Klompen::write_state;

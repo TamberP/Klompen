@@ -19,6 +19,16 @@ my $tags = {
     'misc' => [],
 };
 
+sub push_tags {
+    my ($id, $ts, $title, $author, $tags) = @_;
+    $tags =~ s/\s+//g;
+    my @tags = split(/,/, $tags);
+
+    foreach(@tags){
+	tag_push($id, $ts, $title, $author, $_);
+    }
+}
+
 sub tag_push {
     my ($id, $ts, $title, $author, $tag) = @_;
 
@@ -54,6 +64,29 @@ sub generate {
 	    # include/footer.txt would be here.
 		 ])]);
     close $postH;
+}
+
+sub generate_tag_archive {
+    my $fileH;
+    foreach my $tag (keys %{$tags}){
+	# This gives us each tag in turn.
+	my @posts = sort { $b->{'date'} cmp $a->{'date'} } @{$tag};
+	open($fileH, '>:encoding(UTF-8)',
+	     Klompen->tag_path . "/$tag" . Klompen->post_extension);
+	print $fileH $h->html([ 
+	    $h->head([
+		$h->meta({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
+		$h->title(Klompen->site_name . " tags || $tag"),
+		$h->link ({'rel' => 'stylesheet', 'type' => 'text/css',
+			   'media' => 'screen', 'href' => Klompen->stylesheet_url})
+		     ]),
+	    $h->body([
+		$h->h1("All posts tagged $tag"),
+		$h->div({'id' => 'archive'}, [create_links(@posts)]),
+		$h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
+		     ])]);
+	close $fileH;
+    }
 }
 
 # The creation of the list of links is handled here because we can't

@@ -116,4 +116,7 @@ sub base_url {
     return $config->{'base_url'};
 }
 
+sub tag_path {
+    return $config->{'posts'}->{'tag_path'};
+}
 1;

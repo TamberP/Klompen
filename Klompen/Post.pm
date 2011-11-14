@@ -82,7 +82,7 @@ sub generate {
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 	    # Here, we'd include include/footer.txt
 		 ])]);
-			
+    Klompen::Archive::push_tags($metadata->{'title'}, str2time($metadata->{'date'}), $metadata->{'title'}, $metadata->{'author'}, $metadata->{'tags'});
 }
 
 sub linkify_author {
