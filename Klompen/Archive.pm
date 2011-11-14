@@ -29,6 +29,10 @@ sub push_tags {
     }
 }
 
+sub tag_list {
+    return (keys %{$tags});
+}
+
 sub tag_push {
     my ($id, $ts, $title, $author, $tag) = @_;
 

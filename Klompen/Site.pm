@@ -6,6 +6,7 @@ use warnings;
 
 use HTML::Tiny;
 use JSON;
+use Klompen::Archive;
 
 sub sidebar_generate {
     my $h = shift;
@@ -19,12 +20,16 @@ sub sidebar_generate {
 
 sub sidebar_category_list {
     my $h = shift;
-    $h->ul([
-	$h->li($h->a("Categories")),
-	$h->li($h->a("Will")),
-	$h->li($h->a("Appear")),
-	$h->li($h->a("Here")),
-	   ]);
+    my @tag_l = Klompen::Archive->tag_list();
+    my @rslt;
+    foreach my $tag (@tag_l){
+	push @rslt, $h->tag('a',
+		    {'href' => Klompen->tag_url() . $h->url_encode(lc($tag)) . 
+			 Klompen->post_extension(),
+		     'title' => 'See all posts in category "' .
+		     $h->entity_encode($tag) . '"'}, $h->entity_encode($tag));
+    }
+    return $h->ul([@rslt]);
 }
 
 sub sidebar_links_list {
