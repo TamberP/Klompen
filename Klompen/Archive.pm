@@ -49,7 +49,7 @@ sub generate {
 	$h->body([
 	    # include/header.txt should be here
 	    $h->h1("Archive"),
-	    create_links(@posts),
+	    $h->div({'id' => 'archive'},[create_links(@posts)]),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 	    # include/footer.txt would be here.
 		 ])]);
