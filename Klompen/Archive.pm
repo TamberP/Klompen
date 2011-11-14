@@ -15,6 +15,19 @@ sub push {
 		      'title' => $title, 'author' => $author}
 }
 
+my $tags = {
+    'misc' => [],
+};
+
+sub tag_push {
+    my ($id, $ts, $title, $author, $tag) = @_;
+
+    $tag =~ s/^\s+//;
+    $tag =~ s/\s+$//;
+    push $tags->{lc($tag)}, {'id' => $id, 'date' => $ts,
+			     'title' => $title, 'author' => $author};
+}
+
 my $h = HTML::Tiny->new('mode' => 'html');
 
 sub generate {
@@ -64,13 +77,13 @@ sub create_links {
 		$last_month = $postdate[4];		       
 	    }
 	}
-	$str = $str . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'}))) . " ";
 	$str = $str . $h->tag('a',
 			      {'href' => Klompen->base_url() . '/archives/' . 
 				   $_->{'id'} . Klompen->post_extension(),
 				   'title' => "Read &quot;" . $h->entity_encode($_->{'title'}) . 
 				   "&quot;."},
 			      $h->entity_encode($_->{'title'}));
+	$str = $str . "&nbsp&nbps" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
 	$str = $str . $h->br();
     }
     return $str;
