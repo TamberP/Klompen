@@ -64,6 +64,7 @@ sub create_links {
 		$last_month = $postdate[4];		       
 	    }
 	}
+	$str = $str . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'}))) . " ";
 	$str = $str . $h->tag('a',
 			      {'href' => Klompen->base_url() . '/archives/' . 
 				   $_->{'id'} . Klompen->post_extension(),
