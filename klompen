@@ -46,7 +46,7 @@ Klompen::read_state;
 
 print "Attempting to generate all posts in source directory " . Klompen->source_directory() . "\n";
 # Create directory tree
-make_path(Klompen->output_directory(), Klompen->output_directory() . "/archives/");
+make_path(Klompen->output_directory(), Klompen->output_directory() . "/archives/", Klompen->tag_path());
 # Generate all the things!
 foreach(Klompen::list_available_posts()){
     print "Generating: $_ \n";
