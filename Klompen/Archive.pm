@@ -6,7 +6,7 @@ use Klompen;
 use Klompen::Site;
 use POSIX qw(strftime);
 use Date::Parse qw(str2time);
-my @post_stack;
+our @post_stack;
 
 sub push {
     my ($id, $ts, $title, $author, $path) = @_;
@@ -116,11 +116,12 @@ sub create_links {
 		$last_month = $postdate[4];		       
 	    }
 	}
+	$_->{'title'} =~ s/^\s+|\s+$//;
 	$str = $str . $h->tag('a',
 			      {'href' => Klompen->conf_base_url() . '/archives/' . 
 				   $_->{'id'} . Klompen->conf_output_extension(),
-				   'title' => "Read &quot;" . $h->entity_encode($_->{'title'}) . 
-				   "&quot;."},
+				   'title' => "Read \"" . 
+				   $h->entity_encode($_->{'title'}) . "\"."},
 			      $h->entity_encode($_->{'title'}));
 	$str = $str . "&nbsp&nbsp;" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
 	$str = $str . $h->br();

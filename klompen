@@ -27,6 +27,7 @@ use Klompen;
 use Klompen::Post;
 use Klompen::Site;
 use Klompen::Archive;
+use Klompen::Index;
 
 # Read configuration file
 my $config;
@@ -61,5 +62,7 @@ foreach(Klompen::list_available_posts()){
 Klompen::Archive::generate;
 # Generate the tag archive pages.
 Klompen::Archive::generate_tag_archive;
+# Generate the archive index.
+Klompen::Index::generate();
 
 Klompen::write_state;
