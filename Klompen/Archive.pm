@@ -51,7 +51,7 @@ sub generate {
     my $postH;
 
     open($postH, ">:encoding(UTF-8)", Klompen->conf_output_directory . Klompen->conf_path_archives() . "index" . Klompen->conf_output_extension())
-	|| print "!! Could not create archive page " . Klompen->conf_output_directory . Klompen->conf_path_archives() . "index" . Klompen->conf_output_extension() . "\n" && return -1;
+	|| print STDERR "!! Could not create archive page " . Klompen->conf_output_directory . Klompen->conf_path_archives() . "index" . Klompen->conf_output_extension() . "\n" && return -1;
 
     print $postH $h->html([
 	$h->head([
@@ -86,7 +86,7 @@ sub generate_tag_archive {
 		     ]),
 	    $h->body([
 		$h->h1("All posts tagged $tag"),
-		$h->div({'id' => 'archive'}, [create_links(@posts)]),
+		$h->div({'id' => 'archive'}, [create_links(0, @posts)]),
 		$h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 		     ])]);
 	close $fileH;
@@ -96,6 +96,8 @@ sub generate_tag_archive {
 # The creation of the list of links is handled here because we can't
 # use a loop inside the HTML outputting functions, it seems.
 sub create_links {
+    my $postp = shift; # Do we include the first paragraph of the
+		       # post? (1 to include it, 0 otherwise.)
     my @posts = @_;
 
     # This needs to be set to a value unlikely to ever happen for a
@@ -120,7 +122,7 @@ sub create_links {
 				   'title' => "Read &quot;" . $h->entity_encode($_->{'title'}) . 
 				   "&quot;."},
 			      $h->entity_encode($_->{'title'}));
-	$str = $str . "&nbsp&nbsp" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
+	$str = $str . "&nbsp&nbsp;" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
 	$str = $str . $h->br();
     }
     return $str;
