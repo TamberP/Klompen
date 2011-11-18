@@ -110,7 +110,7 @@ sub linkify_tags {
     my $i=0;
     foreach(@tags){
 	push @tagl, $h->tag('a', 
-			      { 'href' => Klompen->conf_base_url() . Klompen->conf_path_tags() . $h->entity_encode(lc($_)) . Klompen->conf_output_extension(),
+			      { 'href' => Klompen::tag_url($h->entity_encode($_)),
 				'title' => "See all posts in category \"" . $h->entity_encode($_) . "\""}, 
 			      $h->entity_encode($_));
     }

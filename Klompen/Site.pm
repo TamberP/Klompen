@@ -25,8 +25,7 @@ sub sidebar_category_list {
     foreach my $tag (@tag_l){
 	push @rslt, $h->li(
 	    $h->tag('a', 
-		    {'href' => Klompen->conf_base_url() . Klompen->conf_path_tags() .
-			 $h->url_encode(lc($tag)) .  Klompen->conf_output_extension(),
+		    {'href' => Klompen::tag_url($h->url_encode($tag)),
 			 'title' => 'See all posts in category "' .
 			 $h->entity_encode($tag) . '"'}, 
 		    $h->entity_encode($tag)));
