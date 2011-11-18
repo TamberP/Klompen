@@ -50,14 +50,13 @@ sub generate {
     my @posts = sort { $b->{'date'} cmp $a->{'date'} } @post_stack;
     my $postH;
 
-    open($postH, ">:encoding(UTF-8)", Klompen->output_directory()
-    . "/archives/index" . Klompen->post_extension())
-	|| print "!! Could not create archive page " . Klompen->output_directory() . "/archives/index" . Klompen->post_extension() . "\n" && return -1;
+    open($postH, ">:encoding(UTF-8)", Klompen->conf_output_directory . Klompen->conf_path_archives() . "index" . Klompen->conf_output_extension())
+	|| print "!! Could not create archive page " . Klompen->conf_output_directory . Klompen->conf_path_archives() . "index" . Klompen->conf_output_extension() . "\n" && return -1;
 
     print $postH $h->html([
 	$h->head([
 	    $h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
-	    $h->title(Klompen->site_name . " archive"),
+	    $h->title(Klompen->conf_site_name . " archive"),
 	    $h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 
 		       'media' => 'screen', 'href' => Klompen->stylesheet_url})
 		 ]),
@@ -77,11 +76,11 @@ sub generate_tag_archive {
 	# This gives us each tag in turn.
 	my @posts = sort { $b->{'date'} cmp $a->{'date'} } @{$tags->{$tag}};
 	open($fileH, '>:encoding(UTF-8)',
-	     Klompen->tag_path . "/$tag" . Klompen->post_extension);
+	     Klompen->conf_output_directory . Klompen->conf_path_tags . $tag . Klompen->conf_output_extension);
 	print $fileH $h->html([ 
 	    $h->head([
 		$h->meta({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
-		$h->title(Klompen->site_name . " tags || $tag"),
+		$h->title(Klompen->conf_site_name . " tags || $tag"),
 		$h->link ({'rel' => 'stylesheet', 'type' => 'text/css',
 			   'media' => 'screen', 'href' => Klompen->stylesheet_url})
 		     ]),
@@ -116,8 +115,8 @@ sub create_links {
 	    }
 	}
 	$str = $str . $h->tag('a',
-			      {'href' => Klompen->base_url() . '/archives/' . 
-				   $_->{'id'} . Klompen->post_extension(),
+			      {'href' => Klompen->conf_base_url() . '/archives/' . 
+				   $_->{'id'} . Klompen->conf_output_extension(),
 				   'title' => "Read &quot;" . $h->entity_encode($_->{'title'}) . 
 				   "&quot;."},
 			      $h->entity_encode($_->{'title'}));

@@ -39,18 +39,22 @@ my $config;
     local $/=undef;
     $config_jsn = <$config_fh>;
     close($config_fh);
-    $Klompen::config = decode_json($config_jsn);
+    Klompen::config_set(decode_json($config_jsn));
 }
 
 Klompen::read_state;
 
-print "Attempting to generate all posts in source directory " . Klompen->source_directory() . "\n";
+print STDERR "Attempting to generate all posts in source directory " . Klompen->conf_input_directory() . "\n";
 # Create directory tree
-make_path(Klompen->output_directory(), Klompen->output_directory() . "/archives/", Klompen->tag_path());
+make_path(Klompen->conf_output_directory(), Klompen->conf_output_directory() . Klompen->conf_path_archives(), Klompen->conf_output_directory() . Klompen->conf_path_tags());
 # Generate all the things!
 foreach(Klompen::list_available_posts()){
+    if($_ eq "-1"){
+	print STDERR "Could not find posts. Aborting.\n";
+	exit();
+    }
     print "Generating: $_ \n";
-    Klompen::Post::generate(Klompen->source_directory() . $_);
+    Klompen::Post::generate(Klompen->conf_input_directory() . '/' . $_);
 }
 
 # Generate the archive page.

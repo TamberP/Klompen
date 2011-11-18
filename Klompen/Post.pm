@@ -94,7 +94,7 @@ sub linkify_author {
     $author[0] =~ s/^\s//g;
     $author[0] =~ s/\s$//g;
     return $h->tag('a',
-		   {'href'  => Klompen->base_url() . '/author/' . lc($h->url_encode($author[0])) . Klompen->post_extension(),
+		   {'href'  => Klompen->conf_base_url() . '/author/' . lc($h->url_encode($author[0])) . Klompen->conf_output_extension(),
 		    'title' => "See " . $h->entity_encode($author[0]) . "'s profile page."},
 		   $h->entity_encode($author[0]));
 }
@@ -109,11 +109,10 @@ sub linkify_tags {
     my @tagl;
     my $i=0;
     foreach(@tags){
-	$tagl[$i] = $h->tag('a', 
-			      { 'href' => Klompen->tag_url() . lc($h->url_encode($_)) . Klompen->post_extension(),
+	push @tagl, $h->tag('a', 
+			      { 'href' => Klompen->conf_base_url() . Klompen->conf_path_tags() . $h->entity_encode(lc($_)) . Klompen->conf_output_extension(),
 				'title' => "See all posts in category \"" . $h->entity_encode($_) . "\""}, 
 			      $h->entity_encode($_));
-	$i++;
     }
     undef $i;
     return join(', ', @tagl);
@@ -127,7 +126,7 @@ sub post_output_path {
     my $id = $metadata->{'id'};
     $id =~ s/^\s//;
     $id =~ s/\s$//;
-    return Klompen::output_directory() . "/archives/$id" . Klompen::post_extension();
+    return Klompen->conf_output_directory() . Klompen->conf_path_archives() . $id . Klompen->conf_output_extension();
 }
 
 1;
