@@ -58,7 +58,7 @@ sub generate {
 
     Klompen::Archive::push($metadata->{'id'},
     Date::Parse::str2time($metadata->{'date'}), $metadata->{'title'},
-    $metadata->{'author'});
+    $metadata->{'author'}, $path);
 
     # Now, output what we can, because we must.
     open($post_fh, '>:encoding(UTF-8)', post_output_path($metadata)) || die "Could not write out to " . post_output_path($metadata);

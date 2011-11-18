@@ -9,10 +9,11 @@ use Date::Parse qw(str2time);
 my @post_stack;
 
 sub push {
-    my ($id, $ts, $title, $author) = @_;
+    my ($id, $ts, $title, $author, $path) = @_;
 
     push @post_stack, {'id' => $id, 'date' => $ts, 
-		      'title' => $title, 'author' => $author}
+		      'title' => $title, 'author' => $author,
+		       'path' => $path}
 }
 
 my $tags = {
