@@ -69,7 +69,7 @@ sub generate {
 	    $h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
 		 ]),
 	$h->body([
-	    # We'd include include/header.txt here, I think.
+	    Klompen->get_header_contents(),
 	    $h->h1({'id' => 'post_title'}, $h->entity_encode($metadata->{'title'})),
 	    $h->div({'id' => 'meta'}, [
 			"Filed under: " . 
@@ -80,7 +80,7 @@ sub generate {
 			]),
 	    $h->div({'id' => 'content'}, markdown($article_src)),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
-	    # Here, we'd include include/footer.txt
+	    Klompen->get_footer_contents(),
 		 ])]);
     Klompen::Archive::push_tags($metadata->{'id'}, str2time($metadata->{'date'}), $metadata->{'title'}, $metadata->{'author'}, $metadata->{'tags'});
 }

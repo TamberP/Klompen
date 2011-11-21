@@ -337,4 +337,48 @@ sub config_set {
     $config = shift;
 }
 
+sub include_path {
+    return $config->{'includes'};
+}
+
+sub get_header_file {
+    return include_path() . '/header.txt';
+}
+
+sub get_header_contents {
+    return $config->{'header_text'};
+}
+
+sub get_footer_file {
+    return include_path() . '/footer.txt';
+}
+
+sub get_footer_contents {
+    return $config->{'footer_text'};
+}
+
+sub read_includes {
+    my $header_file = get_header_file();
+    my $footer_file = get_footer_file();
+
+    if(defined($header_file)){
+	open(INCLUDE_FILE, '<:encoding(UTF-8)', $header_file)
+	    || printf STDERR "Could not open page header $header_file: \"$!\"\n" && goto footer_read;
+	{
+	    local $/ = undef;
+	    $config->{'header_text'} = <INCLUDE_FILE>;
+	}
+	close(INCLUDE_FILE);
+    }
+  footer_read:
+    if(defined($footer_file)){
+	open(INCLUDE_FILE, '<:encoding(UTF-8)', $footer_file)
+	    || printf STDERR "Could not open page footer $footer_file: \"$!\"\n";
+	{
+	    local $/ = undef;
+	    $config->{'footer_text'} = <INCLUDE_FILE>;
+	}
+	close(INCLUDE_FILE);
+    }
+}
 1;

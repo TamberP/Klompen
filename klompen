@@ -47,6 +47,7 @@ my $config;
 }
 
 Klompen::read_state;
+Klompen::read_includes;
 
 print STDERR "Attempting to generate all posts in source directory " . Klompen->conf_input_directory() . "\n";
 # Create directory tree
