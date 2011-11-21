@@ -33,10 +33,12 @@ sub generate {
 		      'media' => 'screen', 'href' => Klompen->stylesheet_url}),
 	    ]),
 	$h->body([
+	    Klompen->get_header_contents(),
 	    $h->h1($h->entity_encode(Klompen->conf_site_name)),
 	    $h->div({'id' => 'content'},
 		    [Klompen::Archive::create_links(1, @posts)]),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h) ]),
+	    Klompen->get_footer_contents(),
 		 ])]);
     close $postH;
 }

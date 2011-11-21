@@ -85,9 +85,11 @@ sub generate_tag_archive {
 			   'media' => 'screen', 'href' => Klompen->stylesheet_url})
 		     ]),
 	    $h->body([
+		Klompen->get_header_contents(),
 		$h->h1("All posts tagged $tag"),
 		$h->div({'id' => 'archive'}, [create_links(0, @posts)]),
 		$h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
+		Klompen->get_footer_contents(),
 		     ])]);
 	close $fileH;
     }
