@@ -34,7 +34,10 @@ my $config;
 {
     my $config_fh;
     my $config_jsn;
-    open($config_fh, "<:encoding(UTF-8)", "klompen.cfg") 
+    my $config_file = './klompen.cfg';
+    $config_file = $ARGV[0] if(defined($ARGV[0]));
+	
+    open($config_fh, "<:encoding(UTF-8)", $config_file) 
 	|| die "Could not open configuration file";
 
     local $/=undef;
