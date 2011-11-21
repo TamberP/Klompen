@@ -211,7 +211,7 @@ sub post_archive_url($) {
 
 sub tag_url($) {
     my $tag = shift;
-    return conf_base_url(). conf_path_tags() . lc($tag) . conf_output_extension;
+    return conf_base_url(). conf_path_tags() . lc($tag);
 }
 
 =head2 C<author_url($author_name)>

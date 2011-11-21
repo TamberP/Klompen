@@ -119,7 +119,7 @@ sub create_links {
 	$_->{'title'} =~ s/^\s+|\s+$//;
 	$str = $str . $h->tag('a',
 			      {'href' => Klompen->conf_base_url() . '/archives/' . 
-				   $_->{'id'} . Klompen->conf_output_extension(),
+				   $_->{'id'},
 				   'title' => "Read \"" . 
 				   $h->entity_encode($_->{'title'}) . "\"."},
 			      $h->entity_encode($_->{'title'}));
