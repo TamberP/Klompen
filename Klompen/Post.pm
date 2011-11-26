@@ -77,7 +77,7 @@ sub generate {
 			$h->span({'id' => 'post-tags'}, linkify_tags($metadata->{'tags'})) . " by " . 
 			$h->span({'id' => 'post-author'}, linkify_author($metadata->{'author'})),
 			$h->br(),
-			$h->span({'id' => 'post-date'}, $h->entity_encode((POSIX::strftime "%a, %e %B %Y @ %R", strptime($metadata->{'date'})))),
+			$h->span({'id' => 'post-date'}, $h->entity_encode((POSIX::strftime "%e %B %Y @ %R", strptime($metadata->{'date'})))),
 			]),
 	    $h->div({'id' => 'content'}, markdown($article_src)),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
