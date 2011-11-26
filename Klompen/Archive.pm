@@ -65,7 +65,7 @@ sub generate {
 	$h->body([
 	    # include/header.txt should be here
 	    $h->h1("Archive"),
-	    $h->div({'id' => 'archive'},[create_links(@posts)]),
+	    $h->div({'id' => 'archive'},[create_links(0, undef, @posts)]),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 	    # include/footer.txt would be here.
 		 ])]);
@@ -89,7 +89,7 @@ sub generate_tag_archive {
 	    $h->body([
 		Klompen->get_header_contents(),
 		$h->h1("All posts tagged $tag"),
-		$h->div({'id' => 'archive'}, [create_links(0, @posts)]),
+		$h->div({'id' => 'archive'}, [create_links(0, undef, @posts)]),
 		$h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 		Klompen->get_footer_contents(),
 		$h->p({'id' => 'credit'}, "Proudly powered by " . $h->tag('a', {'href' => 'https://github.com/TamberP/Klompen',
@@ -104,6 +104,8 @@ sub generate_tag_archive {
 sub create_links {
     my $postp = shift; # Do we include the first paragraph of the
 		       # post? (1 to include it, 0 otherwise.)
+    my $rss   = shift; # The XML generation object. undef if we're not
+		       # generating a feed.
     my @posts = @_;
 
     # This needs to be set to a value unlikely to ever happen for a
@@ -131,6 +133,11 @@ sub create_links {
 			      $h->entity_encode($_->{'title'}));
 	$str = $str . "&nbsp&nbsp;" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
 	$str = $str . $h->br();
+
+	# Add this item to the RSS feed.
+	if(defined($rss)){
+	    $rss->item(Klompen->conf_base_url() . '/archives/' . $_->{'id'}, $_->{'title'});
+	}
     }
     return $str;
 }

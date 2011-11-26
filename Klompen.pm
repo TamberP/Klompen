@@ -381,4 +381,21 @@ sub read_includes {
 	close(INCLUDE_FILE);
     }
 }
+
+sub conf_rss_limit {
+    if(defined($config->{'output'}->{'rss'}->{'limit'})){
+	return $config->{'output'}->{'rss'}->{'limit'};
+    } else {
+	return 10;
+    }
+}
+
+sub conf_rss_name {
+    if(defined($config->{'output'}->{'rss'}->{'name'})){
+	return $config->{'output'}->{'rss'}->{'name'};
+    } else {
+	return conf_output_directory() . "/feed.rss";
+    }
+}
+	
 1;

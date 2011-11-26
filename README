@@ -1,12 +1,14 @@
 # Klompen
 
-Klompen is a static blog generation engine, with minimal dependencies.
+Klompen is a static blog generation engine, with an ever growing tower
+of dependencies.
 
 ## Dependencies
    - HTML::Tiny
    - JSON
    - File::Path
    - Text::Markdown
+   - XML::RSS::SimpleGen
 
 ## Configuration
 
