@@ -62,6 +62,7 @@ sub generate {
 
     # Now, output what we can, because we must.
     open($post_fh, '>:encoding(UTF-8)', post_output_path($metadata)) || die "Could not write out to " . post_output_path($metadata);
+    print $post_fh Klompen::Site::doctype() . "\n";
     print $post_fh $h->html([
 	$h->head([
 	    $h->title($h->entity_encode($metadata->{'title'})),
@@ -80,8 +81,12 @@ sub generate {
 			]),
 	    $h->div({'id' => 'content'}, markdown($article_src)),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
-	    Klompen->get_footer_contents(),
-		 ])]);
+	    $h->div({'id' => 'footer'}, [
+			Klompen->get_footer_contents(),
+			$h->p({'id' => 'credit'}, "Proudly powered by " . $h->tag('a', {'href' => 'https://github.com/TamberP/Klompen',
+											'title' => 'Klompen on GitHub'}, 'Klompen') . "."),
+
+		 ])])]);
     Klompen::Archive::push_tags($metadata->{'id'}, str2time($metadata->{'date'}), $metadata->{'title'}, $metadata->{'author'}, $metadata->{'tags'});
 }
 

@@ -24,6 +24,8 @@ sub generate {
 	|| print STDERR "!! Could not create index page " . Klompen->conf_output_directory()
 	. "/index" . Klompen->conf_output_extension() . "\n" && return -1;
 
+    print $postH Klompen::Site::doctype() . "\n";
+
     print $postH $h->html([
 	$h->head([
 	    $h->meta ({'http-equiv' => 'Content-Type',
@@ -38,8 +40,11 @@ sub generate {
 	    $h->div({'id' => 'content'},
 		    [Klompen::Archive::create_links(1, @posts)]),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h) ]),
-	    Klompen->get_footer_contents(),
-		 ])]);
+	    $h->div({'id' => 'footer'}, [
+			Klompen->get_footer_contents(),
+			$h->p({'id' => 'credit'}, "Proudly powered by " . $h->tag('a', {'href' => 'https://github.com/TamberP/Klompen',
+											'title' => 'Klompen on GitHub'}, 'Klompen') . "."),
+		 ])])]);
     close $postH;
 }
 

@@ -53,6 +53,8 @@ sub generate {
     open($postH, ">:encoding(UTF-8)", Klompen->conf_output_directory . Klompen->conf_path_archives() . "index" . Klompen->conf_output_extension())
 	|| print STDERR "!! Could not create archive page " . Klompen->conf_output_directory . Klompen->conf_path_archives() . "index" . Klompen->conf_output_extension() . "\n" && return -1;
 
+    print $postH Klompen::Site::doctype() . "\n";
+
     print $postH $h->html([
 	$h->head([
 	    $h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
@@ -90,6 +92,8 @@ sub generate_tag_archive {
 		$h->div({'id' => 'archive'}, [create_links(0, @posts)]),
 		$h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 		Klompen->get_footer_contents(),
+		$h->p({'id' => 'credit'}, "Proudly powered by " . $h->tag('a', {'href' => 'https://github.com/TamberP/Klompen',
+										'title' => 'Klompen on GitHub'}, 'Klompen') . "."),
 		     ])]);
 	close $fileH;
     }
