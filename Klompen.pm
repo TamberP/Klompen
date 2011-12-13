@@ -362,23 +362,10 @@ sub read_includes {
     my $footer_file = get_footer_file();
 
     if(defined($header_file)){
-	open(INCLUDE_FILE, '<:encoding(UTF-8)', $header_file)
-	    || printf STDERR "Could not open page header $header_file: \"$!\"\n" && goto footer_read;
-	{
-	    local $/ = undef;
-	    $config->{'header_text'} = <INCLUDE_FILE>;
-	}
-	close(INCLUDE_FILE);
+	$config->{'header_text'} = File::Slurp::read_file($header_file);
     }
-  footer_read:
     if(defined($footer_file)){
-	open(INCLUDE_FILE, '<:encoding(UTF-8)', $footer_file)
-	    || printf STDERR "Could not open page footer $footer_file: \"$!\"\n";
-	{
-	    local $/ = undef;
-	    $config->{'footer_text'} = <INCLUDE_FILE>;
-	}
-	close(INCLUDE_FILE);
+	$config->{'footer_text'} = File::Slurp::read_file($footer_file);
     }
 }
 
