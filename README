@@ -7,6 +7,7 @@ of dependencies.
    - HTML::Tiny
    - JSON
    - File::Path
+   - File::Slurp
    - Text::Markdown
    - XML::RSS::SimpleGen
 

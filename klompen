@@ -23,6 +23,8 @@ use warnings;
 
 use JSON qw(decode_json encode_json);
 use File::Path qw(make_path);
+use File::Slurp;
+
 use Klompen;
 use Klompen::Post;
 use Klompen::Site;
@@ -32,18 +34,10 @@ use Klompen::Index;
 # Read configuration file
 my $config;
 {
-    my $config_fh;
-    my $config_jsn;
     my $config_file = './klompen.cfg';
     $config_file = $ARGV[0] if(defined($ARGV[0]));
-	
-    open($config_fh, "<:encoding(UTF-8)", $config_file) 
-	|| die "Could not open configuration file";
 
-    local $/=undef;
-    $config_jsn = <$config_fh>;
-    close($config_fh);
-    Klompen::config_set(decode_json($config_jsn));
+    Klompen::config_set(decode_json(File::Slurp::read_file($config_file)));
 }
 
 Klompen::read_state;
