@@ -3,6 +3,7 @@ package Klompen;
 use utf8;
 use strict;
 use warnings;
+use File::Spec;
 use JSON qw(decode_json encode_json);
 
 =head1 Klompen
@@ -26,241 +27,249 @@ my $_state = {
     'id'   => 0,
 };
 
+###############################################################################
+## TRACTOR'd
+###############################################################################
 
-=head1 Config accessors
+=head2 source_ext( )
 
-These are functions to get at the information contained within the
-configuration.  B<It is highly recommended you use these, if you are
-modifying the code and need a value from the configuration; that way,
-any changes to the configuration file format will not break your
-code.> I<(I have already changed the layout of the configuration file
-once, don't rely on me not changing it again.)>
-
-=cut
-
-sub conf_input_extension {
-=head3 C<conf_input_extension()>
-
-Gives the extension one should expect input files to have.  (Can be
-undef, in which case input files have I<no> extension.)
+Returns the extension one should expect source files to have. (May be
+an empty string, in which case there is no extension.)
 
 =cut
 
-    return $config->{'posts'}->{'input'}->{'extension'}; 
+sub source_ext {
+    return $config->{'posts'}->{'input'}->{'extension'} || '';
 }
 
-=head3 C<conf_output_extension()>
+=head2 output_ext( )
 
-Gives the extension that output files will be created with. (Can be
-undef, in which case the output files have I<no> extension.
-
-=cut
-
-sub conf_output_extension { 
-    return $config->{'posts'}->{'output'}->{'extension'}; 
-}
-
-=head3 C<conf_input_directory()>
-
-Returns directory that will be searched for input files.
+Returns the extension for output files. May I<also> be an empty
+string.
 
 =cut
 
-sub conf_input_directory {
-    die "Source directory not configured" if(!defined($config->{'posts'}->{'input'}->{'directory'}));
-    return $config->{'posts'}->{'input'}->{'directory'} . "/";
-}
-
-=head3 C<conf_output_directory()>
-
-Returns directory that generated output will be placed in.
-(Will be created at output if it does not exist.)
-
-=cut
-
-sub conf_output_directory {
-    die "Output directory not configured" if(!defined($config->{'posts'}->{'output'}->{'directory'}));
-    return $config->{'posts'}->{'output'}->{'directory'} . "/";
-}
-
-=head3 C<conf_input_encoding()>
-
-Character encoding input should be expected to be in.  (Defaults to
-B<UTF-8>.)
-
-=cut
-
-sub conf_input_encoding {
-    return $config->{'posts'}->{'input'}->{'encoding'};
-}
-
-=head3 C<conf_output_encoding()>
-
-Character encoding input will be generated in. (Defaults to B<UTF-8>.)
-
-=cut
-
-sub conf_output_encoding {
-    return $config->{'posts'}->{'output'}->{'encoding'};
-}
-
-=head3 C<conf_base_url()>
-
-The URL that all relative-in-codebase URLs are appended to.  I<Please
-use proper URL-get function for whatever you're trying to link to,
-rather than constructing it yourself. It will probably work better.>
-
-=cut
-
-sub conf_base_url {
-    return $config->{'base_url'};
+sub output_ext {
+    return $config->{'posts'}->{'output'}->{'extension'} || '';
 }
 
 
-=head3 C<conf_site_name()>
+=head2 source_dir( )
+
+Returns the directory that will be searched for source files; with
+B<no> trailing slash.
+
+=cut
+
+sub source_dir {
+    croak("Source directory not configured. Nowhere to look for source files") if(!defined($config->{'posts'}->{'input'}->{'directory'}));
+    return File::Spec->canonpath($config->{'posts'}->{'input'}->{'directory'});
+}
+
+=head2 output_dir( )
+
+Returns the directory that the generated content will be output to;
+again, with B<no> trailing slash.
+
+=cut
+
+sub output_dir {
+    croak("Output directory not configured. Nowhere to put the output files") if(!defined($config->{'posts'}->{'output'}->{'directory'}));
+
+    return File::Spec->canonpath($config->{'posts'}->{'output'}->{'directory'});
+}
+
+=head2 source_path(source_filename)
+
+Return the path of the given source file (e.g. returned from scanning
+the source directory.)
+
+=cut
+
+sub source_path {
+    my $fn = shift;
+    return source_dir() . "/" . $fn;
+}
+
+=head2 source_encoding( )
+
+Returns the character encoding the input should be expected to be
+in. (Defaults to B<UTF-8>).
+
+=cut
+
+sub source_encoding {
+    return $config->{'posts'}->{'input'}->{'encoding'} || 'UTF-8';
+}
+
+=head2 output_encoding( )
+
+Returns the character encoding the output should be generated
+as. (Defaults to B<UTF-8>)
+
+=cut
+
+sub output_encoding {
+    return $config->{'posts'}->{'output'}->{'encoding'} || 'UTF-8';
+}
+
+=head2
+
+Returns the URL that all other internal URLs are based off.
+
+=cut
+
+sub base_url {
+    my $url = $config->{'base_url'};
+    $url =~ s/\/$//g;
+    return $url;
+}
+
+=head2 site_name( )
 
 This returns the line used to name the blog (e.g. "Joe Bloggs Blog")
 
 =cut
 
-sub conf_site_name {
+sub site_name {
     return $config->{'site_name'};
 }
 
-=head2 Path functions
+=head2 style_url( )
 
-Return the paths, relative to the output directory, where various
-files are held.
-
-=head3 C<conf_path_style()>
-
-Returns the path of the stylesheet file.
+This returns the fully-qualified URL to the stylesheet.
 
 =cut
 
-sub conf_path_style {
-    return $config->{'posts'}->{'output'}->{'urls'}->{'stylesheet'};
-}
-
-=head3 C<conf_path_tags()>
-
-Location (relative to output directory) where the tag folder will be
-created.
-
-=cut
-
-sub conf_path_tags {
-    return $config->{'posts'}->{'output'}->{'urls'}->{'tags'} . "/";
-}
-
-=head3 C<conf_path_archives()>
-
-Similar to C<conf_path_tags()>, but for the folder where the archives
-will be created.
-
-=cut
-
-sub conf_path_archives {
-    return $config->{'posts'}->{'output'}->{'urls'}->{'archives'} . "/";
-}
-
-=head3 C<conf_path_author()>
-
-Similar to C<conf_path_tags()>, but for the folder where author
-profile pages will be created.
-
-=cut
-
-sub conf_path_author {
-    return $config->{'posts'}->{'output'}->{'urls'}->{'author_info'};
-}
-
-=head1 URL functions
-
-These functions are here to properly create URLs for things used in
-Klompen.
-
-=head2 C<stylesheet_url()>
-
-    Return URL of stylesheet
-
-=cut
-
-sub stylesheet_url {
-    my $str = conf_base_url();
-    $str = $str . "/" if($str !~ /\/$/);
-    return $str . conf_path_style();
-}
-
-=head2 C<post_archive_url($post_ID)>
-
-    Return URL of given post
-
-=cut
-
-sub post_archive_url($) {
-    my $post_num = shift;
-    return conf_base_url . conf_path_archives . $post_num . conf_output_extension;
-}
-
-=head2 C<tag_url($tag)>
-
-    Return URL of given tag
-
-=cut
-
-sub tag_url($) {
-    my $tag = shift;
-    return conf_base_url(). conf_path_tags() . lc($tag);
-}
-
-=head2 C<author_url($author_name)>
-
-Return the URL to the author's profile page. 
-
-=cut
-
-sub author_url($) {
-    my $author_name = shift;
-    return conf_base_url . conf_path_author . lc($author_name) . conf_output_extension;
-}
-
-=head1 Other Functions
-
-See following:
-
-=head2 C<list_available_posts()>
-
-Returns an B<unsorted> list of the posts in the source directory.
-
-=cut
-
-sub list_available_posts {
-    opendir my($dh), conf_input_directory() || return -1;
-
-    my $extension = conf_input_extension();
-    my @posts;
-    if(!defined($extension)){
-	# Get everything except . and ..
-	@posts = grep{ !/^\.+/ } readdir $dh;
+sub style_url {
+    my $style = $config->{'posts'}->{'output'}->{'urls'}->{'stylesheet'};
+    if($style =~ m/^https?:\/\//i){
+	# Full URL
+	return $style;
     } else {
-	@posts = grep{ /($extension)$/ } readdir $dh;
+	# Relative URL
+	return base_url() . "/$style";
     }
-    closedir($dh);
-    return @posts;
 }
 
-=head2 C<list_menu_links()>
+=head2 Tags
 
-Returns a list of links to add to the sidebar.
+=head3 tag_path_rel( )
+
+Returns the relative path of the tag output folder.
 
 =cut
 
-sub links_list {
-    return @{$config->{'links'}};
+sub tag_path_rel {
+    my $tag = shift;
+    my $tagbase = File::Spec->canonpath($config->{'posts'}->{'output'}->{'urls'}->{'tags'});
+
+    # If we're given a tag, we need to provide the path to that output
+    # file.
+    return File::Spec->catfile($tagbase, $tag . output_ext()) if(defined($tag));
+    return $tagbase;
 }
 
-=head2 C<read_state()>
+=head3 tag_path( )
+
+Returns the full path of the tag output folder.
+
+=cut
+
+sub tag_path {
+    return File::Spec->catfile(output_dir(), tag_path_rel(shift));
+}
+
+=head3 tag_url( )
+
+Return the full URL of the tag folder, or the given tag.
+
+=cut
+
+sub tag_url {
+    return base_url() . "/" . tag_path_rel(shift);
+}
+
+=head3 archive_path_rel($archive)
+
+Return the path of the archive folder, or the given archive number,
+relative to the output directory.
+
+=cut
+
+sub archive_path_rel {
+    my $archive = shift;
+    my $archivebase = File::Spec->canonpath($config->{'posts'}->{'output'}->{'urls'}->{'archives'});
+    return "$archivebase/$archive" . output_ext() if(defined($archive));
+    return $archivebase;
+}
+
+=head3 archive_path($archive)
+
+Similar to the above, but returns the path to the archive folder (or
+given archive file), including that of the output directory.
+
+=cut
+
+sub archive_path {
+    return output_dir() . "/" . archive_path_rel(shift);
+}
+
+=head3 archive_url($archive)
+
+Returns the full URL of the archive folder (or the given archive ID).
+
+=cut
+
+sub archive_url {
+    return base_url() . "/" . archive_path_rel(shift);
+}
+
+sub author_path_rel {
+    my $author = shift;
+    my $authorbase = File::Spec->canonpath($config->{'posts'}->{'output'}->{'urls'}->{'author_info'});
+    return File::Spec->catfile($authorbase, $author) if(defined($author));
+    return $authorbase;
+}
+
+sub author_path {
+    return File::Spec->catfile(output_path(), author_path_rel(shift));
+}
+
+sub author_url {
+    return base_url() . "/" . author_path_rel(shift);
+}
+
+=head2 list_source_posts( )
+
+=cut
+
+sub list_source_posts {
+    my @tmp = File::Slurp::read_dir(source_dir());
+    my $extension;
+    if(defined($extension = source_ext())){
+	return grep{ /($extension)$/ } @tmp;
+    } else {
+	return @tmp;
+    }
+}
+
+sub list_sidebar_links {
+    return $config->{'links'};
+}
+
+=head2 write_state( )
+
+Write out a small JSON file (state.jsn) containing our state; so we
+can correctly deal with things like non-ID'd posts, etc.
+
+=cut
+
+sub write_state {
+    File::Slurp::write_file('state.jsn', {'atomic' => 1}, encode_json($_state));
+}
+
+=head2 read_state( )
 
 Read in our little generated file that lets us maintain our state
 across runs. (Contains things like the highest ID seen, so we can
@@ -269,120 +278,182 @@ autoincrement it for newer non-ID'd posts, etc.)
 =cut
 
 sub read_state {
-    my $stateH;
-    open($stateH, '<:encoding(UTF-8)', "state.jsn") || return -1;
-    local $/=undef;
-    my $state = <$stateH>;
-    close($stateH);
-    $_state = decode_json($state);
+    my $state = File::Slurp::read_file('state.jsn', {err_mode => 'quiet'});
+    if($state){
+	# The state file doesn't exist, or it wasn't read. This isn't
+	# a big problem.
+	$_state = decode_json($state);
+    }
 }
 
-=head2 C<write_state()>
+=head2 next_id( )
 
-Write out a small JSON file (state.jsn) containing our state; so we
-can correctly deal with things like non-ID'd posts, etc.
+Get the next post-ID, for a post that does not have an
+ID. (i.e. Highest seen ID + 1)
 
 =cut
 
-sub write_state {
-    my $stateH;
-    open($stateH, '>:encoding(UTF-8)', "state.jsn") || printf "Can't write state. (state.jsn)\n";
-    print $stateH encode_json($_state);
-    close($stateH);
-}
-
 sub next_id {
-    # Get the next (i.e. highest + 1) post-ID.
     $_state->{'id'} += 1;
     return ($_state->{'id'});
 }
 
-# If the current ID is higher than the stored one, set the latter to
-# the former.
+=head2 read_id( )
+
+If the current ID is higher than the one stored in our state as the
+highest, update it. Else, ignore it. (This wouldn't be needed, except
+for the directory read occurring out of order.)
+
+=cut
+
 sub read_id {
     my $id = shift;
-    if($id > $_state->{'id'}){
-	$_state->{'id'} = $id;
-    }
+    $_state->{'id'} = $id if($id > $_state->{'id'});
 }
 
-=head2 C<write_id($path, $id)>
+=head2 write_id($path, $id)
 
-Add an ID to a post without one. (The ID given is usually the one
-returned from next_id)
+Add an ID to a post withut one. (Normally, this is usually the output
+from next_id)
 
-B<TODO>: Make this correctly handle a post with a blank ID in
-it. (That is, a line with "ID: ") Need to replace that line with the
-correct one.
+B<TODO>: Make this handle a post with a blank ID line, rather than
+just a non-existant one.
 
 =cut
 
 sub write_id {
-    # Add/update the ID to the given post.
     my $path = shift;
     my $id   = shift;
-    open(postIN, '<:encoding(UTF-8)', $path);
-    open(postOUT, '>:encoding(UTF-8)', $path . ".new");
-    # Prepend the new ID to the top of the file.
-    print postOUT "ID: $id\n";
-    while(<postIN>){
-	print postOUT $_;
-    }
-    close(postIN);
-    close(postOUT);
-    rename "$path.new","$path";
+
+    File::Slurp::prepend_file($path, "ID: " . $id);
 }
 
-sub config_set {
-    $config = shift;
-}
+=head2 include_src_path( )
 
-sub include_path {
+Return the configured path of the location to search for includes.
+
+=cut
+
+sub include_src_path {
     return $config->{'includes'};
 }
 
-sub get_header_file {
-    return include_path() . '/header.txt';
+=head2 header_path( )
+
+The path of the header include file. (FIXME: This and the footer
+include file have yet to be changed to be configurable values. This
+change will be transparent to the rest of the code, which is
+happiness.)
+
+=cut
+
+sub header_path {
+    return File::Spec->catfile(include_src_path(), 'header.txt');
 }
 
-sub get_header_contents {
-    return $config->{'header_text'};
+=head2 footer_path( )
+
+Path of the footer include file.
+
+=cut
+
+sub footer_path {
+    return File::Spec->catfile(include_src_path(), 'footer.txt');
 }
 
-sub get_footer_file {
-    return include_path() . '/footer.txt';
-}
+=head2 header_contents( )
 
-sub get_footer_contents {
-    return $config->{'footer_text'};
-}
+Return the (UTF-8 encoded) contents of the header file. (Not cacheing
+it in a variable like last time; the OS's filesystem cacheing will
+most likely do a better job that I can.)
 
-sub read_includes {
-    my $header_file = get_header_file();
-    my $footer_file = get_footer_file();
+=cut
 
-    if(defined($header_file)){
-	$config->{'header_text'} = File::Slurp::read_file($header_file);
+sub header_contents {
+    if(defined(header_path())){
+	return File::Slurp::read_file(header_path());
+    } else {
+	return "";
     }
-    if(defined($footer_file)){
-	$config->{'footer_text'} = File::Slurp::read_file($footer_file);
+}
+
+=head2 footer_contents( )
+
+=cut
+
+sub footer_contents {
+    if(defined(footer_path())){
+	return File::Slurp::read_file(footer_path());
+    } else {
+	return "";
     }
 }
 
-sub conf_rss_limit {
+=head2 rss_path_rel( )
+
+Returns the relative path of the RSS file.
+
+=cut
+
+sub rss_path_rel {
+    return $config->{'output'}->{'rss'}->{'name'};
+}
+
+=head2 rss_path( )
+
+Returns the full path of the RSS file.
+
+=cut
+
+sub rss_path {
+    my $rel = rss_path_rel();
+    if(defined($rel)){
+	return output_path() . $rel;
+    } else {
+	return undef;
+    }
+}
+
+=head2 rss_url( )
+
+Returns the URL of the RSS file
+
+=cut
+
+sub rss_url {
+    my $rel = rss_path_rel();
+    if(defined($rel)){
+	return base_url() . $rel; 
+    } else {
+	return undef;
+    }
+}
+
+=head2 rss_limit( )
+
+Returns either the configured limit on the number of items in the RSS
+feed, or the default of 10.
+
+=cut
+
+sub rss_limit {
     if(defined($config->{'output'}->{'rss'}->{'limit'})){
 	return $config->{'output'}->{'rss'}->{'limit'};
     } else {
 	return 10;
     }
+	
 }
 
-sub conf_rss_name {
-    if(defined($config->{'output'}->{'rss'}->{'name'})){
-	return $config->{'output'}->{'rss'}->{'name'};
-    } else {
-	return conf_output_directory() . "/feed.rss";
-    }
+=head2 config_set( $ )
+
+Used so the config-reading code in the main file can write to the
+config variable in this module. (i.e. Setter for configuration data.)
+
+=cut
+
+sub config_set {
+    $config = shift;
 }
 	
 1;

@@ -6,6 +6,9 @@ use Klompen;
 use Klompen::Site;
 use POSIX qw(strftime);
 use Date::Parse qw(str2time);
+use File::Slurp;
+use File::Path;
+use Carp;
 our @post_stack;
 
 sub push {
@@ -46,52 +49,63 @@ sub tag_push {
 my $h = HTML::Tiny->new('mode' => 'html');
 
 sub generate {
+    my $mode = shift;
     # Sort the posts in reverse chronological order.
     my @posts = sort { $b->{'date'} cmp $a->{'date'} } @post_stack;
     my $postH;
+    my $title;
 
-    open($postH, ">:encoding(UTF-8)", Klompen->conf_output_directory . Klompen->conf_path_archives() . "index" . Klompen->conf_output_extension())
-	|| print STDERR "!! Could not create archive page " . Klompen->conf_output_directory . Klompen->conf_path_archives() . "index" . Klompen->conf_output_extension() . "\n" && return -1;
+    if($mode eq 'index'){
+	open($postH, ">:encoding(UTF-8)", Klompen::output_dir() . "/index" . Klompen::output_ext()) || print STDERR "!! Could not create index page " . Klompen::output_dir() . 
+	     "/index" . Klompen::output_ext() && return -1;
+	$title = Klompen::site_name();
+    } else {
+	open($postH, ">:encoding(UTF-8)", Klompen::archive_path("index")) || croak "Could not create archive path:" . Klompen::archive_path("index");
+	$title = Klompen::site_name() . " Archive";
+    }
 
     print $postH Klompen::Site::doctype() . "\n";
 
     print $postH $h->html([
 	$h->head([
 	    $h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
-	    $h->title(Klompen->conf_site_name . " archive"),
+	    $h->title($title),
 	    $h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 
-		       'media' => 'screen', 'href' => Klompen->stylesheet_url})
+		       'media' => 'screen', 'href' => Klompen::style_url()})
 		 ]),
 	$h->body([
-	    # include/header.txt should be here
-	    $h->h1("Archive"),
+	    Klompen::header_contents(),
+	    $h->h1($title),
 	    $h->div({'id' => 'archive'},[create_links(0, undef, @posts)]),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
-	    # include/footer.txt would be here.
-		 ])]);
+	    $h->div({'id' => 'footer'}, [
+			Klompen::footer_contents(),
+			$h->p({'id' => 'credit'}, "Proudly powered by " . $h->tag('a', {'href' => 'https://github.com/TamberP/Klompen',	'title' => 'Klompen on GitHub'}, 'Klompen') . "."),
+		    ])])]);
     close $postH;
 }
 
 sub generate_tag_archive {
     my $fileH;
+    File::Path::make_path(Klompen::tag_path());
     foreach my $tag (keys %{$tags}){
 	# This gives us each tag in turn.
 	my @posts = sort { $b->{'date'} cmp $a->{'date'} } @{$tags->{$tag}};
-	open($fileH, '>:encoding(UTF-8)',
-	     Klompen->conf_output_directory . Klompen->conf_path_tags . $tag . Klompen->conf_output_extension);
+	open($fileH, '>:encoding(UTF-8)', Klompen::tag_path($tag));
+
 	print $fileH $h->html([ 
 	    $h->head([
 		$h->meta({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
-		$h->title(Klompen->conf_site_name . " tags || $tag"),
+		$h->title(Klompen::site_name . " tags || $tag"),
 		$h->link ({'rel' => 'stylesheet', 'type' => 'text/css',
-			   'media' => 'screen', 'href' => Klompen->stylesheet_url})
+			   'media' => 'screen', 'href' => Klompen::style_url})
 		     ]),
 	    $h->body([
-		Klompen->get_header_contents(),
+		Klompen::header_contents(),
 		$h->h1("All posts tagged $tag"),
 		$h->div({'id' => 'archive'}, [create_links(0, undef, @posts)]),
 		$h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
-		Klompen->get_footer_contents(),
+		Klompen::footer_contents(),
 		$h->p({'id' => 'credit'}, "Proudly powered by " . $h->tag('a', {'href' => 'https://github.com/TamberP/Klompen',
 										'title' => 'Klompen on GitHub'}, 'Klompen') . "."),
 		     ])]);
@@ -125,11 +139,9 @@ sub create_links {
 	    }
 	}
 	$_->{'title'} =~ s/^\s+|\s+$//;
-	$str = $str . $h->tag('a',
-			      {'href' => Klompen->conf_base_url() . '/archives/' . 
-				   $_->{'id'},
-				   'title' => "Read \"" . 
-				   $h->entity_encode($_->{'title'}) . "\"."},
+	$str = $str . $h->tag('a', {'href' => Klompen::archive_url($_->{'id'}),
+				    'title' => "Read \"" . 
+					$h->entity_encode($_->{'title'}) . "\"."},
 			      $h->entity_encode($_->{'title'}));
 	$str = $str . "&nbsp&nbsp;" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
 	$str = $str . $h->br();

@@ -1,4 +1,5 @@
 package Klompen::Post;
+
 use utf8;
 use strict;
 use warnings;
@@ -9,6 +10,7 @@ use Date::Parse qw(strptime str2time);
 use POSIX qw(strftime);
 use Klompen qw(output_directory post_extension);
 use Klompen::Site;
+use Klompen::Author;
 
 my $h = HTML::Tiny->new( 'mode' => 'html' );
 
@@ -18,6 +20,7 @@ sub generate {
     my $post_fh;
     open($post_fh, '<:encoding(UTF-8)', $path)
 	|| die "Could not open file $path";
+
 
     # Read through the file, chunking the meta-data until a line
     # containing only: "--text follows this line--" is reached.
@@ -34,7 +37,12 @@ sub generate {
     }
     # Now, slurp in the article's text. (The markdown source needs to
     # be parsed all in one go for some parts to be parsed properly.)
+    # NOTE: We cannot use: «my $article_src =
+    # File::Slurp::read_file($path);», since that does not allow us to
+    # skip the header.
+
     my $article_src;
+
     {
 	local $/=undef;
 	seek $post_fh, $pos, 0;
@@ -56,52 +64,43 @@ sub generate {
 	Klompen::read_id($metadata->{'id'});
     }
 
+    # Push the ID, post date (parsed from human-readable string),
+    # title, author and path onto the post stack; so that all useful
+    # data is relatively easily accessible.
     Klompen::Archive::push($metadata->{'id'},
     Date::Parse::str2time($metadata->{'date'}), $metadata->{'title'},
     $metadata->{'author'}, $path);
 
     # Now, output what we can, because we must.
-    open($post_fh, '>:encoding(UTF-8)', post_output_path($metadata)) || die "Could not write out to " . post_output_path($metadata);
-    print $post_fh Klompen::Site::doctype() . "\n";
-    print $post_fh $h->html([
+
+    my $post_buf = Klompen::Site::doctype() . "\n" . $h->html([
 	$h->head([
 	    $h->title($h->entity_encode($metadata->{'title'})),
-	    $h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 'media' => 'screen', 'href' => Klompen::stylesheet_url}),
+	    $h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 'media' => 'screen', 'href' => Klompen::style_url()}),
 	    $h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
 		 ]),
 	$h->body([
-	    Klompen->get_header_contents(),
+	    Klompen->header_contents(),
 	    $h->h1({'id' => 'post_title'}, $h->entity_encode($metadata->{'title'})),
 	    $h->div({'id' => 'meta'}, [
 			"Filed under: " . 
 			$h->span({'id' => 'post-tags'}, linkify_tags($metadata->{'tags'})) . " by " . 
-			$h->span({'id' => 'post-author'}, linkify_author($metadata->{'author'})),
+			$h->span({'id' => 'post-author'}, Klompen::Author::linkify($metadata->{'author'})),
 			$h->br(),
 			$h->span({'id' => 'post-date'}, $h->entity_encode((POSIX::strftime "%e %B %Y @ %R", strptime($metadata->{'date'})))),
 			]),
 	    $h->div({'id' => 'content'}, markdown($article_src)),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 	    $h->div({'id' => 'footer'}, [
-			Klompen->get_footer_contents(),
+			Klompen->footer_contents(),
 			$h->p({'id' => 'credit'}, "Proudly powered by " . $h->tag('a', {'href' => 'https://github.com/TamberP/Klompen',
 											'title' => 'Klompen on GitHub'}, 'Klompen') . "."),
+		    ])])]);
 
-		 ])])]);
+    File::Slurp::write_file(Klompen::archive_path($metadata->{'id'}), {'atomic' => 1, binmode => ':utf8'}, $post_buf);
+
     Klompen::Archive::push_tags($metadata->{'id'}, str2time($metadata->{'date'}), $metadata->{'title'}, $metadata->{'author'}, $metadata->{'tags'});
-}
-
-sub linkify_author {
-    # Turns the author info from a string resembling: 
-    # "Name <email@host>" into a link to their info page.
-
-    my $author = shift;
-    my @author = split(/</, $author);
-    $author[0] =~ s/^\s//g;
-    $author[0] =~ s/\s$//g;
-    return $h->tag('a',
-		   {'href'  => Klompen->conf_base_url() . '/author/' . lc($h->url_encode($author[0])) . Klompen->conf_output_extension(),
-		    'title' => "See " . $h->entity_encode($author[0]) . "'s profile page."},
-		   $h->entity_encode($author[0]));
+    1;
 }
 
 sub linkify_tags {
@@ -109,6 +108,8 @@ sub linkify_tags {
     # then output the list in a nice, human-readable format.
     # ("tagA, tagB, tagC")
     my $tagline = shift;
+    return "" if(!defined($tagline));
+
     $tagline =~ s/\s//g; # Rip out whitespace.
     my @tags = split(/,/, $tagline);
     my @tagl;

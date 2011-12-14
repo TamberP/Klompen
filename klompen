@@ -17,9 +17,7 @@
 # CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-use utf8;
-use strict;
-use warnings;
+use common::sense;
 
 use JSON qw(decode_json encode_json);
 use File::Path qw(make_path);
@@ -27,12 +25,9 @@ use File::Slurp;
 
 use Klompen;
 use Klompen::Post;
-use Klompen::Site;
 use Klompen::Archive;
-use Klompen::Index;
 
 # Read configuration file
-my $config;
 {
     my $config_file = './klompen.cfg';
     $config_file = $ARGV[0] if(defined($ARGV[0]));
@@ -40,27 +35,39 @@ my $config;
     Klompen::config_set(decode_json(File::Slurp::read_file($config_file)));
 }
 
+# Load previously saved state
+# (This includes: Highest ID seen, list of tags.)
 Klompen::read_state;
-Klompen::read_includes;
 
-print STDERR "Attempting to generate all posts in source directory " . Klompen->conf_input_directory() . "\n";
-# Create directory tree
-make_path(Klompen->conf_output_directory(), Klompen->conf_output_directory() . Klompen->conf_path_archives(), Klompen->conf_output_directory() . Klompen->conf_path_tags());
-# Generate all the things!
-foreach(Klompen::list_available_posts()){
-    if($_ eq "-1"){
-	print STDERR "Could not find posts. Aborting.\n";
-	exit();
+# Klompen::list_source_posts croaks if it can't open the directory, or
+# if there are no files; so there's no real need to error-check here.q
+# Also, sort the posts, so that (If you do what I do) name the posts
+# by date (YYYY-MM-DD), the later ones are processed last and get the
+# benefits of a full tag-list.
+my @tmp = Klompen::list_source_posts();
+@tmp = sort { $a cmp $b } @tmp;
+
+# Create the output directory.
+make_path(Klompen::output_dir(), Klompen::archive_path());
+
+# Go through each post, generating them individually. :)
+foreach (@tmp){
+    my $post = $_;
+    print STDERR "Generating post \"$post\": ";
+    if(Klompen::Post::generate(Klompen::source_path($post)) != 1){
+	print STDERR "FAILED!\n";
+    } else {
+	print STDERR "Done.\n";
     }
-    print "Generating: $_ \n";
-    Klompen::Post::generate(Klompen->conf_input_directory() . '/' . $_);
 }
 
-# Generate the archive page.
-Klompen::Archive::generate;
-# Generate the tag archive pages.
-Klompen::Archive::generate_tag_archive;
-# Generate the archive index.
-Klompen::Index::generate();
+# Generate the index/archive pages (List of posts, in reverse
+# chronological order.) This also includes the tag-archives, which are
+# lists of posts (again in reverse-chronological order) using a
+# certain tag.
+Klompen::Archive::generate();
+Klompen::Archive::generate_tag_archive();
+Klompen::Archive::generate('index');
 
+# Write out our state.
 Klompen::write_state;

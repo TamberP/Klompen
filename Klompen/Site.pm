@@ -38,7 +38,7 @@ sub sidebar_links_list {
     my $h = shift;
 
     my $src;
-    foreach(Klompen::links_list){
+    foreach(@{Klompen::list_sidebar_links()}){
 	$src = $src . $h->li($h->a({
 	    'title' => $h->entity_encode($_->{'title'}),
 	    'href' => $_->{'href'}}, 
