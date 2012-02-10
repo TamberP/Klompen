@@ -88,7 +88,7 @@ the source directory.)
 
 sub source_path {
     my $fn = shift;
-    return source_dir() . "/" . $fn;
+    return File::Spec->catdir(source_dir(),  $fn);
 }
 
 =head2 source_encoding( )
