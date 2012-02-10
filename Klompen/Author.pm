@@ -25,7 +25,7 @@ sub printify {
     # nice, printable piece of text.
 
     my $author_tag = shift;
-    croak("Not pased an author tag to printify!") if(!defined($author_tag));
+    croak("Not passed an author tag to printify!") if(!defined($author_tag));
 
     # Remove the email section, we don't need it for this.
     $author_tag =~ s/\s+<.*@.*>\s+//i;
