@@ -225,6 +225,13 @@ sub archive_url {
     return base_url() . "/" . archive_path_rel(shift);
 }
 
+=head3 author_path_rel($author)
+
+Returns the relative path to the author profile page directory, or to
+the given author's profile page.
+
+=cut
+
 sub author_path_rel {
     my $author = shift;
     my $authorbase = File::Spec->canonpath($config->{'posts'}->{'output'}->{'urls'}->{'author_info'});
@@ -232,9 +239,22 @@ sub author_path_rel {
     return $authorbase;
 }
 
+=head3 author_path($author)
+
+Return path to the author profile folder (or author page), including
+output directory.
+
+=cut
+
 sub author_path {
     return File::Spec->catfile(output_path(), author_path_rel(shift));
 }
+
+=head3 author_url($author)
+
+Return full URL of the author folder, or given author's profile page.
+
+=cut
 
 sub author_url {
     return base_url() . "/" . author_path_rel(shift);
