@@ -68,6 +68,7 @@ foreach (@tmp){
 Klompen::Archive::generate();
 Klompen::Archive::generate_tag_archive();
 Klompen::Archive::generate('index');
+Klompen::Archive::generate_rss();
 
 # Write out our state.
 Klompen::write_state;

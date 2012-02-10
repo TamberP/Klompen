@@ -444,7 +444,7 @@ Returns the relative path of the RSS file.
 =cut
 
 sub rss_path_rel {
-    return $config->{'output'}->{'rss'}->{'name'};
+    return File::Spec->canonpath($config->{'posts'}->{'output'}->{'urls'}->{'rss'});
 }
 
 =head2 rss_path( )
@@ -456,7 +456,7 @@ Returns the full path of the RSS file.
 sub rss_path {
     my $rel = rss_path_rel();
     if(defined($rel)){
-	return output_path() . $rel;
+	return File::Spec->catdir(output_dir(),  $rel);
     } else {
 	return undef;
     }

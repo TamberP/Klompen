@@ -1,7 +1,7 @@
 package Klompen::Archive;
 
 use HTML::Tiny;
-
+use XML::RSS::SimpleGen;
 use Klompen;
 use Klompen::Site;
 use POSIX qw(strftime);
@@ -85,6 +85,16 @@ sub generate {
     close $postH;
 }
 
+sub generate_rss {
+    my $rss = XML::RSS::SimpleGen->new(Klompen->base_url(),
+				       Klompen->site_name());
+    $rss->item_limit(Klompen->rss_limit());
+
+    create_links(1, $rss, @posts);
+
+    $rss->save(Klompen->rss_path());
+}
+
 sub generate_tag_archive {
     my $fileH;
     File::Path::make_path(Klompen::tag_path());
@@ -148,7 +158,7 @@ sub create_links {
 
 	# Add this item to the RSS feed.
 	if(defined($rss)){
-	    $rss->item(Klompen->conf_base_url() . '/archives/' . $_->{'id'}, $_->{'title'});
+	    $rss->item(Klompen->archive_url($_->{'id'}), $_->{'title'});
 	}
     }
     return $str;
