@@ -423,7 +423,7 @@ Returns the URL of the RSS file
 sub rss_url {
     my $rel = rss_path_rel();
     if(defined($rel)){
-	return base_url() . $rel; 
+	return base_url() . $rel;
     } else {
 	return undef;
     }
@@ -442,7 +442,7 @@ sub rss_limit {
     } else {
 	return 10;
     }
-	
+
 }
 
 =head2 config_set( $ )
@@ -455,5 +455,5 @@ config variable in this module. (i.e. Setter for configuration data.)
 sub config_set {
     $config = shift;
 }
-	
+
 1;
