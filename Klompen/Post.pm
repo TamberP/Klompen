@@ -100,6 +100,10 @@ sub generate {
     File::Slurp::write_file(Klompen::archive_path($metadata->{'id'}), {'atomic' => 1, binmode => ':utf8'}, $post_buf);
 
     Klompen::Archive::push_tags($metadata->{'id'}, str2time($metadata->{'date'}), $metadata->{'title'}, $metadata->{'author'}, $metadata->{'tags'});
+
+    # Generate the Author's profile page, if it hasn't been done already.
+    Klompen::Author::generate(Klompen::Author::printify($metadata->{'author'}))
+	if(!defined(Klompen::Author::gen_p(Klompen::Author::printify($metadata->{'author'}))));
     1;
 }
 

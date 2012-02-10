@@ -48,7 +48,7 @@ my @tmp = Klompen::list_source_posts();
 @tmp = sort { $a cmp $b } @tmp;
 
 # Create the output directory.
-make_path(Klompen::output_dir(), Klompen::archive_path());
+make_path(Klompen::output_dir(), Klompen::archive_path(), Klompen::author_path());
 
 # Go through each post, generating them individually. :)
 foreach (@tmp){

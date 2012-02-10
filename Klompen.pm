@@ -235,7 +235,7 @@ the given author's profile page.
 sub author_path_rel {
     my $author = shift;
     my $authorbase = File::Spec->canonpath($config->{'posts'}->{'output'}->{'urls'}->{'author_info'});
-    return File::Spec->catfile($authorbase, $author) if(defined($author));
+    return File::Spec->catfile($authorbase, ($author . Klompen::output_ext())) if(defined($author));
     return $authorbase;
 }
 
@@ -247,7 +247,7 @@ output directory.
 =cut
 
 sub author_path {
-    return File::Spec->catfile(output_path(), author_path_rel(shift));
+    return File::Spec->catfile(output_dir(), author_path_rel(shift));
 }
 
 =head3 author_url($author)
@@ -258,6 +258,34 @@ Return full URL of the author folder, or given author's profile page.
 
 sub author_url {
     return base_url() . "/" . author_path_rel(shift);
+}
+
+=head3 author_src_path_rel($author)
+
+Return the path of the author profile input files directory, relative
+to the input directory; or the path of the given author's profile
+source.
+
+=cut
+
+sub author_src_path_rel {
+    my $author = shift;
+    my $authorbase = File::Spec->canonpath($config->{'input'}->{'author_info'});
+    $authorbase = 'profile' if(!defined($authorbase));
+
+    return File::Spec->catfile($authorbase, ($author . source_ext())) if(defined($author));
+    return $authorbase;
+}
+
+=head3 author_src_path($author)
+
+Returns full path to author profile input files, or to the given
+author's profile page source.
+
+=cut
+
+sub author_src_path {
+    return File::Spec->catdir(source_path(), author_src_path_rel(shift));
 }
 
 =head2 list_source_posts( )
@@ -345,7 +373,7 @@ sub write_id {
     my $path = shift;
     my $id   = shift;
 
-    File::Slurp::prepend_file($path, "ID: " . $id);
+    File::Slurp::prepend_file($path, "ID: " . $id . "\n");
 }
 
 =head2 include_src_path( )
