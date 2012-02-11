@@ -75,13 +75,15 @@ sub generate {
 
     my $post_buf = Klompen::Site::doctype() . "\n" . $h->html([
 	$h->head([
-	    $h->title($h->entity_encode($metadata->{'title'})),
+	    $h->title($h->entity_encode($metadata->{'title'}) . " | " . $h->entity_encode(Klompen::site_name())),
 	    $h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 'media' => 'screen', 'href' => Klompen::style_url()}),
 	    $h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
 		 ]),
 	$h->body([
 	    Klompen->header_contents(),
-	    $h->h1({'id' => 'post_title'}, $h->entity_encode($metadata->{'title'})),
+	    $h->tag('a', {'href' => Klompen::base_url(),
+			  'title' => "Back to " . Klompen::site_name() . '.'}, 
+		    $h->h1({'id' => 'post_title'}, $h->entity_encode($metadata->{'title'}))),
 	    $h->div({'id' => 'meta'}, [
 			"Filed under: " . 
 			$h->span({'id' => 'post-tags'}, linkify_tags($metadata->{'tags'})) . " by " . 
@@ -121,7 +123,7 @@ sub linkify_tags {
     my $i=0;
     foreach(@tags){
 	push @tagl, $h->tag('a', 
-			      { 'href' => Klompen::tag_url($h->entity_encode($_)),
+			      { 'href' => Klompen::tag_url(lc($h->entity_encode($_))),
 				'title' => "See all posts in category \"" . $h->entity_encode($_) . "\""}, 
 			      $h->entity_encode($_));
     }
