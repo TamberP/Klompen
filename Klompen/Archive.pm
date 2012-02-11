@@ -12,11 +12,11 @@ use Carp;
 our @post_stack;
 
 sub push {
-    my ($id, $ts, $title, $author, $path) = @_;
+    my ($id, $ts, $title, $author, $path, $snippet) = @_;
 
     push @post_stack, {'id' => $id, 'date' => $ts, 
 		      'title' => $title, 'author' => $author,
-		       'path' => $path}
+		       'path' => $path, 'preview' => $snippet};
 }
 
 my $tags = {
@@ -155,6 +155,7 @@ sub create_links {
 			      $h->entity_encode($_->{'title'}));
 	$str = $str . "&nbsp&nbsp;" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
 	$str = $str . $h->br();
+#	$str = $str . $h->p({'class' => 'snippet'}, [$_->{'snippet'}]) . $h->br();  # Commented out until snippet-loading works.
 
 	# Add this item to the RSS feed.
 	if(defined($rss)){

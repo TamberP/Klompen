@@ -504,4 +504,8 @@ sub config_set {
     $config = shift;
 }
 
+sub fragment_length {
+    return 9;
+}
+
 1;
