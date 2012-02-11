@@ -9,6 +9,7 @@ use Date::Parse qw(str2time);
 use File::Slurp;
 use File::Path;
 use Carp;
+use Text::Markdown 'markdown';
 our @post_stack;
 
 sub push {
@@ -155,7 +156,17 @@ sub create_links {
 			      $h->entity_encode($_->{'title'}));
 	$str = $str . "&nbsp&nbsp;" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
 	$str = $str . $h->br();
-#	$str = $str . $h->p({'class' => 'snippet'}, [$_->{'snippet'}]) . $h->br();  # Commented out until snippet-loading works.
+	if(defined($_->{'preview'})){
+	    $str = $str . $h->p({'class' => 'snippet'}, [
+				    markdown($_->{'preview'}),
+				    $h->tag('a', {
+					'class' => 'readmore',
+					'href' => Klompen::archive_url($_->{'id'}), 
+					'title' => "Read \"" . $h->entity_encode($_->{'title'}). "\"."},
+					    "Read more&hellip;")
+				]);
+	    $str = $str . $h->br() . $h->br();
+	}
 
 	# Add this item to the RSS feed.
 	if(defined($rss)){

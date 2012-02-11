@@ -64,12 +64,23 @@ sub generate {
 	Klompen::read_id($metadata->{'id'});
     }
 
+    my $i = 0;
+    my $snippet = "";
+    for(split /\n/, $article_src){
+	if(($_ =~ m/^\s+/) | ($i == Klompen::fragment_length()) | ($_ eq "<!-- snip -->")){
+	    last;
+	}
+
+	$snippet = $snippet . " $_";
+	$i = $i + 1;
+    }
+
     # Push the ID, post date (parsed from human-readable string),
-    # title, author and path onto the post stack; so that all useful
-    # data is relatively easily accessible.
+    # title, author, path and preview snippet onto the post stack; so
+    # that all useful data is relatively easily accessible.
     Klompen::Archive::push($metadata->{'id'},
     Date::Parse::str2time($metadata->{'date'}), $metadata->{'title'},
-    $metadata->{'author'}, $path);
+    $metadata->{'author'}, $path, $snippet);
 
     # Now, output what we can, because we must.
 
