@@ -32,7 +32,7 @@ sub linkify {
     my $author = lc(printify(shift));
 
     return HTML::Tiny->tag('a',
-			   {'href' => Klompen::author_url($author) . Klompen::output_ext(),
+			   {'href' => Klompen::author_url($author),
 			    'title' => "See $author\'s profile page."}, $author);
 }
 
