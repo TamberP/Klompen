@@ -505,7 +505,7 @@ sub config_set {
 }
 
 sub fragment_length {
-    return 9;
+    return $config->{'posts'}->{'output'}->{'snippet_length'} || 9;
 }
 
 1;
