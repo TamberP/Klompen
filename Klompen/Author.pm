@@ -5,7 +5,6 @@ use strict;
 use warnings;
 
 use Klompen;
-use Text::Markdown 'markdown';
 use HTML::Tiny;
 
 # Maintain a little bit of state to ensure we don't regenerate the
@@ -82,7 +81,7 @@ sub generate {
 				    $h->h1({'id' => 'author_prof_title'},
 					   $h->entity_encode($author)),
 				    $h->div({'id' => 'profile'}, [
-						markdown(File::Slurp::read_file(
+						Klompen::format(File::Slurp::read_file(
 							     Klompen::author_src_path(lc($author))))
 					    ]),
 				    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
