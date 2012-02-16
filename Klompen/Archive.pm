@@ -9,7 +9,6 @@ use Date::Parse qw(str2time);
 use File::Slurp;
 use File::Path;
 use Carp;
-use Text::Markdown 'markdown';
 our @post_stack;
 
 sub push {
@@ -158,7 +157,7 @@ sub create_links {
 	$str = $str . $h->br();
 	if(defined($_->{'preview'})){
 	    $str = $str . $h->p({'class' => 'snippet'}, [
-				    markdown($_->{'preview'}),
+				    Klompen::format($_->{'preview'}),
 				    $h->tag('a', {
 					'class' => 'readmore',
 					'href' => Klompen::archive_url($_->{'id'}), 
