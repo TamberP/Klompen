@@ -526,7 +526,7 @@ in. (This may be overridden on a per-post basis.)
 =cut
 
 sub input_format {
-    return $config->{'posts'}->{'input'}->{'format'};
+    return $config->{'posts'}->{'input'}->{'format'} || 'markdown';
 }
 
 =head2 format($source_text [$format])
@@ -543,6 +543,7 @@ sub format {
     my $src = shift;
     my $format = shift;
 
+    # Use the default if this post doesn't have one set.
     $format = input_format() if(!defined($format));
 
     if($format eq 'markdown'){
