@@ -528,4 +528,42 @@ in. (This may be overridden on a per-post basis.)
 sub input_format {
     return $config->{'posts'}->{'input'}->{'format'};
 }
+
+=head2 format($[$])
+
+Takes source document text and an optional format name
+string. ('markdown' for standard markdown, 'creole' for WikiCreole,
+'wiki' for MediaWiki markup.)
+
+Returns the resulting (X)HTML markup of the document.
+
+=cut
+
+sub format {
+    my $src = shift;
+    my $format = shift;
+
+    $format = input_format() if(!defined($format));
+
+    if($format eq 'markdown'){
+	require Text::Markdown;
+	Text::Markdown->import( 'markdown' );
+
+	return markdown($src);
+    }
+
+    if($format eq 'creole'){
+	require Text::WikiCreole;
+	Text::WikiCreole->import( 'creole_parse' );
+
+	return creole_parse($src);
+    }
+
+    if($format eq 'wiki'){
+	require Text::MediaWikiFormat;
+	Text::MediaWikiFormat->import('wikiformat');
+
+	return wikiformat($src);
+    };
+}
 1;
