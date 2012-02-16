@@ -290,6 +290,10 @@ sub author_src_path {
 
 =head2 list_source_posts( )
 
+Returns an array containing the names of all the posts in the source
+directory. (This is filtered by the configured file extension, so
+files with a different extension will not be listed.)
+
 =cut
 
 sub list_source_posts {
@@ -503,6 +507,12 @@ config variable in this module. (i.e. Setter for configuration data.)
 sub config_set {
     $config = shift;
 }
+
+=head2 fragment_length( )
+
+Returns the number of lines long a fragment should be. This is either the value from the configuration file, or 9.
+
+=cut
 
 sub fragment_length {
     return $config->{'posts'}->{'output'}->{'snippet_length'} || 9;
