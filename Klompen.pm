@@ -529,7 +529,7 @@ sub input_format {
     return $config->{'posts'}->{'input'}->{'format'};
 }
 
-=head2 format($[$])
+=head2 format($source_text [$format])
 
 Takes source document text and an optional format name
 string. ('markdown' for standard markdown, 'creole' for WikiCreole,
