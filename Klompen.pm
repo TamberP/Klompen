@@ -18,7 +18,7 @@ Klompen.
 my $config = {
     'posts' => {
 	'output' => { 'extension' => '.htm', 'encoding' => 'utf-8' },
-	'input'  => { 'extension' => '.txt', 'encoding' => 'utf-8' },
+	'input'  => { 'extension' => '.txt', 'encoding' => 'utf-8', 'format' => 'markdown' },
     },
     'links' => [],
 };
@@ -518,4 +518,14 @@ sub fragment_length {
     return $config->{'posts'}->{'output'}->{'snippet_length'} || 9;
 }
 
+=head2 input_format( )
+
+Returns the default markup/down format the input source file will be
+in. (This may be overridden on a per-post basis.)
+
+=cut
+
+sub input_format {
+    return $config->{'posts'}->{'input'}->{'format'};
+}
 1;
