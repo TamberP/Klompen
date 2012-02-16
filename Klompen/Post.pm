@@ -5,7 +5,6 @@ use strict;
 use warnings;
 
 use HTML::Tiny;
-use Text::Markdown 'markdown';
 use Date::Parse qw(strptime str2time);
 use POSIX qw(strftime);
 use Klompen qw(output_directory post_extension);
@@ -35,7 +34,7 @@ sub generate {
 	my @tmp = split(/:/, $line, 2);
 	$metadata->{lc($tmp[0])} = $tmp[1];
     }
-    # Now, slurp in the article's text. (The markdown source needs to
+    # Now, slurp in the article's text. (The document source needs to
     # be parsed all in one go for some parts to be parsed properly.)
     # NOTE: We cannot use: «my $article_src =
     # File::Slurp::read_file($path);», since that does not allow us to
@@ -102,7 +101,7 @@ sub generate {
 			$h->br(),
 			$h->span({'id' => 'post-date'}, $h->entity_encode((POSIX::strftime "%e %B %Y @ %R", strptime($metadata->{'date'})))),
 			]),
-	    $h->div({'id' => 'content'}, markdown($article_src)),
+	    $h->div({'id' => 'content'}, Klompen::format($article_src, $metadata->{'format'})),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 	    $h->div({'id' => 'footer'}, [
 			Klompen->footer_contents(),
