@@ -413,6 +413,26 @@ sub footer_path {
     return File::Spec->catfile(include_src_path(), 'footer.txt');
 }
 
+=head2 menu_header_path( ){
+
+Path of the menu header include file.
+
+=cut
+
+sub menu_header_path{
+    return File::Spec->catfile(include_src_path(), 'menu_header.txt');
+}
+
+=head2 menu_footer_path( ){
+
+Path of the menu footer include file.
+
+=cut
+
+sub menu_footer_path{
+    return File::Spec->catfile(include_src_path(), 'menu_footer.txt');
+}
+
 =head2 header_contents( )
 
 Return the (UTF-8 encoded) contents of the header file. (Not cacheing
@@ -436,6 +456,34 @@ sub header_contents {
 sub footer_contents {
     if(defined(footer_path())){
 	return File::Slurp::read_file(footer_path());
+    } else {
+	return "";
+    }
+}
+
+=head2 menu_header_contents( )
+
+Returns the contents of the menu header include file.
+
+=cut
+
+sub menu_header_contents {
+    if(defined(menu_header_path())){
+	return File::Slurp::read_file(menu_header_path());
+    } else {
+	return "";
+    }
+}
+
+=head2 menu_footer_contents( )
+
+Returns the contents of the menu footer include file.
+
+=cut
+
+sub menu_footer_contents {
+    if(defined(menu_footer_path())){
+	return File::Slurp::read_file(menu_footer_path());
     } else {
 	return "";
     }

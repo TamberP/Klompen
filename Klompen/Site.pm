@@ -10,12 +10,13 @@ use Klompen::Archive;
 
 sub sidebar_generate {
     my $h = shift;
+    $h->div({'id' => 'menu_header'}, [Klompen->menu_header_contents()]),
     # Generate the list of categories
     $h->h1({'id' => 'categories'}, "Categories"),
     sidebar_category_list($h),
     $h->h1({'id' => 'links'}, "Links"),
     sidebar_links_list($h),
-    # Include include/sidebar.txt here, too.
+    $h->div({'id' => 'menu_footer'}, [Klompen->menu_footer_contents()])
 }
 
 sub sidebar_category_list {
