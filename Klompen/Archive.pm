@@ -149,7 +149,8 @@ sub create_links {
 	    }
 	}
 	$_->{'title'} =~ s/^\s+|\s+$//;
-	$str = $str . $h->tag('a', {'href' => Klompen::archive_url($_->{'id'}),
+	$str = $str . $h->tag('a', {'class' => 'post-link',
+				    'href' => Klompen::archive_url($_->{'id'}),
 				    'title' => "Read \"" . 
 					$h->entity_encode($_->{'title'}) . "\"."},
 			      $h->entity_encode($_->{'title'}));
