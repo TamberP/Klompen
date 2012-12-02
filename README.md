@@ -1,8 +1,9 @@
 # Klompen
 
 Klompen is a static blog generation engine; that is to say, the only
-active code run is on the blog-owner's desktop machine, removing one
-avenue of attack -- and, possibly, some load -- from the server.
+active code run is on the blog-owner's desktop (or laptop) machine,
+removing one avenue of attack -- and, possibly, some load -- from the
+server.
 
 Klompen is user-friendly, but it is *very* particular in its selection
 of friends.
