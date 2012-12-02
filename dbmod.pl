@@ -53,22 +53,23 @@ my $db = DBI->connect('dbi:' . $conf->{'db'}->{'type'} . ':' . $conf->{'db'}->{'
 die "Database connection failed: " . DBI::errstr . "\n" if(!defined($db));
 
 if(defined($options{'d'})){
+    # Create the empty site database.
+
     $db->do("CREATE TABLE authors (id TEXT PRIMARY KEY ASC ON CONFLICT ABORT, email TEXT," .
 	    "www TEXT, name TEXT)");
-    die "Can't create authors table: $db->errstr\n" if(defined($db->errstr));
+    die "Can't create authors table: " . $db->errstr . "\n" if(defined($db->errstr));
     $db->do("CREATE TABLE posts (id PRIMARY KEY ASC ON CONFLICT ABORT, title TEXT NOT NULL," .
 	    "author TEXT NOT NULL, path TEXT NOT NULL, FOREIGN KEY(author) " .
 	    "REFERENCES authors(id))");
-    die "Can't create posts table: $db->errstr\n" if(defined($db->errstr));
-    $db->do("CREATE TABLE categories (id INTEGER PRIMARY KEY ASC AUTOINCREMENT," .
-	    "name TEXT NOT NULL, desc TEXT NOT NULL)");
-    die "Can't create categories table: $db->errstr\n" if(defined($db->errstr));
+    die "Can't create posts table: " . $db->errstr . "\n" if(defined($db->errstr));
+    $db->do("CREATE TABLE categories (name TEXT PRIMARY KEY ASC NOT NULL, desc TEXT NOT NULL)");
+    die "Can't create categories table: " . $db->errstr . "\n" if(defined($db->errstr));
     $db->do("CREATE TABLE dates (post INTEGER NOT NULL, creation BOOLEAN, ts DATETIME " .
 	    "NOT NULL, FOREIGN KEY(post) REFERENCES post(id))");
-    die "Can't create dates table: $db->errstr\n" if(defined($db->errstr));
-    $db->do("CREATE TABLE p2c ( post INTEGER NOT NULL, cat INTEGER NOT NULL, FOREIGN " .
-	    "KEY(post) REFERENCES post(id), FOREIGN key(cat) REFERENCES categories(id))");
-    die "Can't create p2ctable: $db->errstr\n" if(defined($db->errstr));
+    die "Can't create dates table: " . $db->errstr . "\n" if(defined($db->errstr));
+    $db->do("CREATE TABLE p2c ( post INTEGER NOT NULL, cat TEXT NOT NULL, FOREIGN " .
+	    "KEY(post) REFERENCES post(id), FOREIGN key(cat) REFERENCES categories(name))");
+    die "Can't create p2c table: " . $db->errstr . "\n" if(defined($db->errstr));
 
     print "Database created successfully.\n";
     goto END;
@@ -80,19 +81,19 @@ if(defined($options{'c'}) && !defined($options{'a'})){
     #      0: category name
     #      1: category description
     die "Usage for -c: ./dbmod.pl -c <category name> <category description>\n" if(!defined($ARGV[0]) || !defined($ARGV[1]));
-    my $row = $db->selectrow_hashref("SELECT id FROM categories WHERE name = ?", undef, $ARGV[0]);
+    my $row = $db->selectrow_hashref("SELECT 1 FROM categories WHERE name = ?", undef, $ARGV[0]);
     if(!defined($row)){
-	die "Check for existing category failed: $db->errstr\n" if(defined($db->errstr));
+	die "Check for existing category failed: " . $db->errstr . "\n" if(defined($db->errstr));
 
 	# This category doesn't exist, create it.
-	$db->do("INSERT INTO categories VALUES (NULL, ?, ?)", undef, @ARGV[0 .. 1]);
-	die "Creating category $ARGV[0] failed: $db->errstr\n" if(defined($db->errstr));
+	$db->do("INSERT INTO categories VALUES (?, ?)", undef, @ARGV[0 .. 1]);
+	die "Creating category $ARGV[0] failed: " . $db->errstr . "\n" if(defined($db->errstr));
 
 	print "Category $ARGV[0] created.\n";
     } else {
 	# This category exists. Update it with a new description.
 	$db->do("UPDATE categories SET desc = ? WHERE name = ?", undef, reverse(@ARGV[0 .. 1]));
-	die "Updating category $ARGV[0] failed: $db->errstr\n" if(defined($db->errstr));
+	die "Updating category $ARGV[0] failed: " . $db->errstr . "\n" if(defined($db->errstr));
 
 	print "Category $ARGV[0] updated.\n";
     }
