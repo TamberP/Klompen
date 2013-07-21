@@ -88,6 +88,7 @@ sub generate {
 sub generate_rss {
     my $rss = XML::RSS::SimpleGen->new(Klompen->base_url(),
 				       Klompen->site_name());
+    my @posts = sort { $b->{'date'} cmp $a->{'date'} } @post_stack;
     $rss->item_limit(Klompen->rss_limit());
 
     create_links(1, $rss, @posts);
@@ -138,6 +139,13 @@ sub create_links {
     my $str = '';
     foreach(@posts){
 	{
+
+	    # Add this item to the RSS feed.
+	    if($rss){
+		$rss->item(Klompen::archive_url($_->{'id'}), $_->{'title'});
+		return "";
+	    }
+
 	    my @postdate = localtime($_->{'date'});
 	    # If the month of this post is different to the last one
 	    # we saw, print a nice little header to separate the
@@ -168,10 +176,7 @@ sub create_links {
 	    $str = $str . $h->br() . $h->br();
 	}
 
-	# Add this item to the RSS feed.
-	if(defined($rss)){
-	    $rss->item(Klompen->archive_url($_->{'id'}), $_->{'title'});
-	}
+
     }
     return $str;
 }
