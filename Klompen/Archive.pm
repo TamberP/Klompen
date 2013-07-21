@@ -109,7 +109,9 @@ sub generate_tag_archive {
 		$h->meta({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
 		$h->title(Klompen::site_name . " tags || $tag"),
 		$h->link ({'rel' => 'stylesheet', 'type' => 'text/css',
-			   'media' => 'screen', 'href' => Klompen::style_url})
+			   'media' => 'screen', 'href' => Klompen::style_url}),
+		$h->link ({'rel' => 'alternate', 'type' => 'application/rss+xml',
+			   'title' => 'RSS', 'href' => Klompen::rss_url()})
 		     ]),
 	    $h->body([
 		Klompen::header_contents(),

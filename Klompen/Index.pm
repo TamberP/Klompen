@@ -35,6 +35,8 @@ sub generate {
 	    $h->title($h->entity_encode(Klompen->conf_site_name)),
 	    $h->link({'rel' => 'stylesheet', 'type' => 'text/css',
 		      'media' => 'screen', 'href' => Klompen->stylesheet_url}),
+	    $h->link ({'rel' => 'alternate', 'type' => 'application/rss+xml',
+		       'title' => 'RSS', 'href' => Klompen::rss_url()})
 	    ]),
 	$h->body([
 	    Klompen->get_header_contents(),
