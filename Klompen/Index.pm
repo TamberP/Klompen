@@ -21,9 +21,6 @@ sub generate {
 
     my $postH;
 
-    my $rss = XML::RSS::SimpleGen->new(Klompen->conf_base_url(), Klompen->conf_site_name());
-    $rss->item_limit(Klompen->conf_rss_limit());
-
     open($postH, ">:encoding(UTF-8)", Klompen->conf_output_directory()
 	 . "/index" . Klompen->conf_output_extension())
 	|| print STDERR "!! Could not create index page " . Klompen->conf_output_directory()
@@ -43,7 +40,7 @@ sub generate {
 	    Klompen->get_header_contents(),
 	    $h->h1($h->entity_encode(Klompen->conf_site_name)),
 	    $h->div({'id' => 'content'},
-		    [Klompen::Archive::create_links(1, $rss, @posts)]),
+		    [Klompen::Archive::create_links(1, undef, @posts)]),
 	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h) ]),
 	    $h->div({'id' => 'footer'}, [
 			Klompen->get_footer_contents(),
