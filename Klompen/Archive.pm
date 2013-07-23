@@ -35,6 +35,13 @@ sub tag_list {
     return (keys %{$tags});
 }
 
+sub tag_load {
+    my @tags = @_;
+    foreach (@tags){
+	$tags->{lc($_)} = [];
+    }
+}
+
 sub tag_push {
     my ($id, $ts, $title, $author, $tag) = @_;
 

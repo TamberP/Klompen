@@ -318,6 +318,7 @@ can correctly deal with things like non-ID'd posts, etc.
 =cut
 
 sub write_state {
+    @{$_state->{'tags'}} = Klompen::Archive::tag_list();
     File::Slurp::write_file('state.jsn', {'atomic' => 1}, encode_json($_state));
 }
 
@@ -325,17 +326,21 @@ sub write_state {
 
 Read in our little generated file that lets us maintain our state
 across runs. (Contains things like the highest ID seen, so we can
-autoincrement it for newer non-ID'd posts, etc.)
+autoincrement it for newer non-ID'd posts, etc. and the list of tags,
+so that all posts show a full tag list, even if the actual content
+behind them isn't generated until later)
 
 =cut
 
 sub read_state {
     my $state = File::Slurp::read_file('state.jsn', {err_mode => 'quiet'});
     if($state){
-	# The state file doesn't exist, or it wasn't read. This isn't
+	# If the state file doesn't exist, or it wasn't read, it's not
 	# a big problem.
 	$_state = decode_json($state);
     }
+    print STDERR "Loaded tags of: @{$_state->{'tags'}}\n";
+    Klompen::Archive::tag_load(@{$_state->{'tags'}});
 }
 
 =head2 next_id( )
