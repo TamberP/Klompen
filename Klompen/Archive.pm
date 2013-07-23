@@ -19,9 +19,7 @@ sub push {
 		       'path' => $path, 'preview' => $snippet};
 }
 
-my $tags = {
-    'misc' => [],
-};
+my $tags = {};
 
 sub push_tags {
     my ($id, $ts, $title, $author, $tags) = @_;
