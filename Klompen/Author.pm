@@ -60,6 +60,8 @@ sub generate {
 
     my $h = HTML::Tiny->new( 'mode' => 'html' );
 
+    my $src = File::Slurp::read_file(Klompen::author_src_path(lc($author)));
+
     File::Slurp::write_file(Klompen::author_path(lc($author)),
 			  Klompen::Site::doctype() . "\n" .
 			    $h->html([
@@ -81,8 +83,7 @@ sub generate {
 				    $h->h1({'id' => 'author_prof_title'},
 					   $h->entity_encode($author)),
 				    $h->div({'id' => 'profile'}, [
-						Klompen::format(File::Slurp::read_file(
-							     Klompen::author_src_path(lc($author))))
+						Klompen::format($src)
 					    ]),
 				    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 				    $h->div({'id' => 'footer'}, [
