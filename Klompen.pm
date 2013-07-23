@@ -339,8 +339,9 @@ sub read_state {
 	# a big problem.
 	$_state = decode_json($state);
     }
-    print STDERR "Loaded tags of: @{$_state->{'tags'}}\n";
-    Klompen::Archive::tag_load(@{$_state->{'tags'}});
+    if(exists($_state->{'tags'})){
+	Klompen::Archive::tag_load(@{$_state->{'tags'}});
+    }
 }
 
 =head2 next_id( )
