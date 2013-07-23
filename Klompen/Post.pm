@@ -116,7 +116,7 @@ sub generate {
     # Generate the Author's profile page, if it hasn't been done
     # already; and if we have author source path configured..
     Klompen::Author::generate(Klompen::Author::printify($metadata->{'author'}))
-	if(!defined(Klompen::Author::gen_p(Klompen::Author::printify($metadata->{'author'}))) && defined(Klompen::author_path_rel()));
+	if(!(Klompen::Author::gen_p(Klompen::Author::printify($metadata->{'author'}))) && defined(Klompen::author_path_rel()));
     1;
 }
 
