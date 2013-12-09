@@ -22,7 +22,7 @@ use common::sense;
 use JSON qw(decode_json encode_json);
 use File::Path qw(make_path);
 use File::Slurp;
-
+use Switch;
 use Klompen;
 use Klompen::Post;
 use Klompen::Archive;
@@ -54,10 +54,10 @@ make_path(Klompen::output_dir(), Klompen::archive_path(), Klompen::author_path()
 foreach (@tmp){
     my $post = $_;
     print STDERR "Generating post \"$post\": ";
-    if(Klompen::Post::generate(Klompen::source_path($post)) != 1){
-	print STDERR "FAILED!\n";
-    } else {
-	print STDERR "Done.\n";
+    switch(Klompen::Post::generate(Klompen::source_path($post))){
+	case -1 { print "FAILED!\n"};
+	case  0 { print "Not required.\n"};
+	case  1 { print "Done.\n"};
     }
 }
 

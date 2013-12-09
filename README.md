@@ -48,6 +48,13 @@ This section contains the following:
    output will be relative to this.
 * `encoding`
    Encoding that the output textfiles will be in.
+* `incremental`
+   Either 'true' or 'false'. Sets whether or not the modification time
+   of the source file is used to determine if the output file should
+   be re-generated. Defaults to 'false'.
+* `snippet_length`
+   Number of lines of the post to use as the post snippet; the text
+   preview of the post, in the index listings.
 
 ##### `urls`
 

@@ -113,6 +113,21 @@ sub output_encoding {
     return $config->{'posts'}->{'output'}->{'encoding'} || 'UTF-8';
 }
 
+=head2 output_incremental ( )
+
+Returns true if the mtime of the source file will be used to decide
+whether or not to generate the output file if the source file hasn't
+been updated since our last run.
+
+Should save on network traffic and make it worthwhile to use stuff
+such as rsync.
+
+=cut
+
+sub output_incremental {
+    return $config->{'posts'}->{'output'}->{'incremental'} || 'false';
+}
+
 =head2
 
 Returns the URL that all other internal URLs are based off.
@@ -319,6 +334,7 @@ can correctly deal with things like non-ID'd posts, etc.
 
 sub write_state {
     @{$_state->{'tags'}} = Klompen::Archive::tag_list();
+    $_state->{'last_run'} = time();
     File::Slurp::write_file('state.jsn', {'atomic' => 1}, encode_json($_state));
 }
 
@@ -342,6 +358,17 @@ sub read_state {
     if(exists($_state->{'tags'})){
 	Klompen::Archive::tag_load(@{$_state->{'tags'}});
     }
+}
+
+=head2 last_run( )
+
+Retrieves the timestamp of the last time we were run; used to decide
+whether or not to overwrite existing output files.
+
+=cut
+
+sub last_run {
+    return ($_state->{'last_run'});
 }
 
 =head2 next_id( )

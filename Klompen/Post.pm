@@ -20,6 +20,8 @@ sub generate {
     open($post_fh, '<:encoding(UTF-8)', $path)
 	|| die "Could not open file $path";
 
+    # Grab the modification time of the source file, for later.
+    my $modtime = (stat($post_fh))[9];
 
     # Read through the file, chunking the meta-data until a line
     # containing only: "--text follows this line--" is reached.
@@ -80,6 +82,16 @@ sub generate {
     Klompen::Archive::push($metadata->{'id'},
     Date::Parse::str2time($metadata->{'date'}), $metadata->{'title'},
     $metadata->{'author'}, $path, $snippet);
+
+
+    # Check whether or not we need to re-generate this post's output
+    # file. If not, then we won't bother formatting the whole
+    # document; but all the metadata and snippet should still exist,
+    # for indexes.
+    if((Klompen::output_incremental() eq 'true') and ($modtime <= (Klompen::last_run()))){
+	close($post_fh);
+	return 0;
+    }
 
     # Now, output what we can, because we must.
 
