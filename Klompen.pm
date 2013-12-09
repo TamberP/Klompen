@@ -368,7 +368,8 @@ whether or not to overwrite existing output files.
 =cut
 
 sub last_run {
-    return ($_state->{'last_run'});
+    return ($_state->{'last_run'}) if(exists($_state->{'last_run'}));
+    return time();
 }
 
 =head2 next_id( )
