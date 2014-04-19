@@ -149,7 +149,7 @@ sub create_links {
 
 	    # Add this item to the RSS feed.
 	    if($rss){
-		$rss->item(Klompen::archive_url($_->{'id'}), $_->{'title'});
+		$rss->item(Klompen::archive_url($_->{'id'}), $_->{'title'}, Klompen::format($_->{'preview'}));
 		next;
 	    }
 
