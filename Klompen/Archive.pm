@@ -150,7 +150,7 @@ sub create_links {
 	    # Add this item to the RSS feed.
 	    if($rss){
 		$rss->item(Klompen::archive_url($_->{'id'}), $_->{'title'});
-		return "";
+		next;
 	    }
 
 	    my @postdate = localtime($_->{'date'});
