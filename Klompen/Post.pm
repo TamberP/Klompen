@@ -83,6 +83,9 @@ sub generate {
     Date::Parse::str2time($metadata->{'date'}), $metadata->{'title'},
     $metadata->{'author'}, $path, $snippet);
 
+    # Add this post's data to the tag records, so that it can be
+    # listed by tag.
+    Klompen::Archive::push_tags($metadata->{'id'}, str2time($metadata->{'date'}), $metadata->{'title'}, $metadata->{'author'}, $metadata->{'tags'});
 
     # Check whether or not we need to re-generate this post's output
     # file. If not, then we won't bother formatting the whole
@@ -123,7 +126,6 @@ sub generate {
 
     File::Slurp::write_file(Klompen::archive_path($metadata->{'id'}), {'atomic' => 1, binmode => ':utf8'}, $post_buf);
 
-    Klompen::Archive::push_tags($metadata->{'id'}, str2time($metadata->{'date'}), $metadata->{'title'}, $metadata->{'author'}, $metadata->{'tags'});
 
     # Generate the Author's profile page, if it hasn't been done
     # already; and if we have author source path configured..
