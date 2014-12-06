@@ -11,6 +11,8 @@ of dependencies.
    - **XML::RSS::SimpleGen** *RSS Feed generation*
    - **File::Spec** *File modification time, for incremental updates*
    - **Date::Format**
+   - **Encode**
+   - **utf8::all**
 
 ### Optional, depending on input formats
    - **Text::Markdown** *For when your input documents are Markdown formatted*

@@ -18,7 +18,8 @@
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 use common::sense;
-
+use utf8::all;
+use Encode;
 use JSON qw(decode_json encode_json);
 use File::Path qw(make_path);
 use File::Slurp;
@@ -32,7 +33,7 @@ use Klompen::Archive;
     my $config_file = './klompen.cfg';
     $config_file = $ARGV[0] if(defined($ARGV[0]));
 
-    Klompen::config_set(decode_json(File::Slurp::read_file($config_file)));
+    Klompen::config_set(decode_json(encode("utf8", File::Slurp::read_file($config_file))));
 }
 
 # Load previously saved state
