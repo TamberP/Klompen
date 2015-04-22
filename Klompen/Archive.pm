@@ -172,7 +172,7 @@ sub create_links {
 	$str = $str . "&nbsp&nbsp;" . $h->em({'class' => 'archive_date'}, strftime("%e %B %Y", localtime($_->{'date'})));
 	$str = $str . $h->br();
 	if(defined($_->{'preview'})){
-	    $str = $str . $h->p({'class' => 'snippet'}, [
+	    $str = $str . $h->div({'class' => 'snippet'}, [
 				    Klompen::format($_->{'preview'}),
 				    $h->tag('a', {
 					'class' => 'readmore',
