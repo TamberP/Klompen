@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use File::Spec;
 use JSON qw(decode_json encode_json);
+use URI;
 
 =head1 Klompen
 
@@ -128,7 +129,7 @@ sub output_incremental {
     return $config->{'posts'}->{'output'}->{'incremental'} || 'false';
 }
 
-=head2
+=head2 base_url ( )
 
 Returns the URL that all other internal URLs are based off.
 
@@ -138,6 +139,17 @@ sub base_url {
     my $url = $config->{'base_url'};
     $url =~ s/\/$//g;
     return $url;
+}
+
+=head2 domain ( )
+
+Returns the domain of the server in the base URL
+
+=cut
+
+sub domain {
+    my $url = URI->new(base_url());
+    return $url->host;
 }
 
 =head2 site_name( )
