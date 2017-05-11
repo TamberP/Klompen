@@ -97,7 +97,7 @@ sub generate {
 	    $h->body([
 		Klompen::header_contents(),
 		$h->h1($title),
-		$h->div({'id' => 'archive'},[create_links(0, undef, @posts[($pagecount * 10) .. (($pagecount * 10) + 9) ])]),
+		$h->div({'id' => 'archive'},[create_links(0, undef, @posts[(($pagecount-1) * 10) .. ((($pagecount-1) * 10) + 9) ])]),
 		$h->div({'id' => 'pageselect'}, [create_pagejump($pagecount, (scalar @posts))]),
 		$h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 		$h->div({'id' => 'footer'}, [
