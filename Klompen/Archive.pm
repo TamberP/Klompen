@@ -66,7 +66,6 @@ sub generate {
     while($pagecount < ((scalar @posts) / 10)){
 
 	if($mode eq 'index'){
-	    print STDERR "Post count: " . scalar @posts . "\n";
 	    $filename = Klompen::output_dir() . "/index";
 	    # We don't want our default index to be 'index0', we want it
 	    # to just be 'index'.
@@ -106,7 +105,6 @@ sub generate {
 			])])]);
 	close $postH;
 
-	print STDERR "PAGE $pagecount DONE!\n";
 	# On to the next page.
 	$pagecount = $pagecount + 1;
     }
