@@ -56,9 +56,9 @@ foreach (@tmp){
     my $post = $_;
     print STDERR "Generating post \"$post\": ";
     switch(Klompen::Post::generate(Klompen::source_path($post))){
-	case -1 { print "FAILED!\n"};
-	case  0 { print "Not required.\n"};
-	case  1 { print "Done.\n"};
+	case -1 { print STDERR "FAILED!\n"};
+	case  0 { print STDERR "Not required.\n"};
+	case  1 { print STDERR "Done.\n"};
     }
 }
 
