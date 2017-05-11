@@ -4,7 +4,7 @@ use HTML::Tiny;
 use XML::RSS::SimpleGen;
 use Klompen;
 use Klompen::Site;
-use POSIX qw(strftime);
+use POSIX qw(strftime ceil);
 use Date::Parse qw(str2time);
 use File::Slurp;
 use File::Path;
@@ -98,6 +98,7 @@ sub generate {
 		Klompen::header_contents(),
 		$h->h1($title),
 		$h->div({'id' => 'archive'},[create_links(0, undef, @posts[($pagecount * 10) .. (($pagecount * 10) + 9) ])]),
+		$h->div({'id' => 'pageselect'}, [create_pagejump($pagecount, (scalar @posts))]),
 		$h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
 		$h->div({'id' => 'footer'}, [
 			    Klompen::footer_contents(),
@@ -204,6 +205,31 @@ sub create_links {
 	}
 
 
+    }
+    return $str;
+}
+
+sub create_pagejump {
+    my $pagenumber = shift;
+    my $totalposts = shift;
+    my $totalpages = (ceil($totalposts) / 10);
+
+    my $str = '';
+    for(my $i=1; $i < $totalpages; $i++){
+	if($i eq $pagenumber){
+	    $str = $str . "$i";
+	} else {
+	    if($i eq 1){
+		$str = $str . $h->tag('a', {'class' => 'nav-link',
+					    'href' => Klompen::archive_url('index'),
+					    'title' => "Go to page 1"}, 1);
+	    } else {
+		$str = $str . $h->tag('a', {'class' => 'nav-link',
+					    'href' => Klompen::archive_url('index' . $i),
+					    'title' => "Go to page $i"}, $i);
+	    }
+	}
+	$str = $str . " ";
     }
     return $str;
 }
