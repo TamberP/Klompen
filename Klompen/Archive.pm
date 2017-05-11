@@ -59,35 +59,57 @@ sub generate {
     my @posts = sort { $b->{'date'} cmp $a->{'date'} } @post_stack;
     my $postH;
     my $title;
+    my $filename;
+    my $pagecount = 1;
 
-    if($mode eq 'index'){
-	open($postH, ">:encoding(UTF-8)", Klompen::output_dir() . "/index" . Klompen::output_ext()) || print STDERR "!! Could not create index page " . Klompen::output_dir() . 
-	     "/index" . Klompen::output_ext() && return -1;
-	$title = Klompen::site_name();
-    } else {
-	open($postH, ">:encoding(UTF-8)", Klompen::archive_path("index")) || croak "Could not create archive path:" . Klompen::archive_path("index");
-	$title = Klompen::site_name() . " Archive";
+    #    while(($pagecount * 10) < ((scalar @posts) / 10)){
+    while($pagecount < ((scalar @posts) / 10)){
+
+	if($mode eq 'index'){
+	    print STDERR "Post count: " . scalar @posts . "\n";
+	    $filename = Klompen::output_dir() . "/index";
+	    # We don't want our default index to be 'index0', we want it
+	    # to just be 'index'.
+	    $filename = $filename . $pagecount if($pagecount > 1);
+	    $filename = $filename . Klompen::output_ext();
+	    $title = Klompen::site_name();
+	} else {
+	    my $pageno;
+	    if($pagecount > 1){
+		$pageno = $pagecount;
+	    } else {
+		$pageno = "";
+	    }
+	    $filename = Klompen::archive_path("index" . $pageno);
+	    $title = Klompen::site_name() . " Archive";
+	}
+
+	open($postH, ">:encoding(UTF-8)", $filename) || croak "Could not create archive/index: " . $filename;
+
+	print $postH Klompen::Site::doctype() . "\n";
+
+	print $postH $h->html([
+	    $h->head([
+		$h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
+		$h->title($title),
+		$h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 
+			   'media' => 'screen', 'href' => Klompen::style_url()})
+		     ]),
+	    $h->body([
+		Klompen::header_contents(),
+		$h->h1($title),
+		$h->div({'id' => 'archive'},[create_links(0, undef, @posts[($pagecount * 10) .. (($pagecount * 10) + 9) ])]),
+		$h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
+		$h->div({'id' => 'footer'}, [
+			    Klompen::footer_contents(),
+			    $h->p({'id' => 'credit'}, "Proudly powered by " . $h->tag('a', {'href' => 'https://github.com/TamberP/Klompen',	'title' => 'Klompen on GitHub'}, 'Klompen') . "."),
+			])])]);
+	close $postH;
+
+	print STDERR "PAGE $pagecount DONE!\n";
+	# On to the next page.
+	$pagecount = $pagecount + 1;
     }
-
-    print $postH Klompen::Site::doctype() . "\n";
-
-    print $postH $h->html([
-	$h->head([
-	    $h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
-	    $h->title($title),
-	    $h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 
-		       'media' => 'screen', 'href' => Klompen::style_url()})
-		 ]),
-	$h->body([
-	    Klompen::header_contents(),
-	    $h->h1($title),
-	    $h->div({'id' => 'archive'},[create_links(0, undef, @posts)]),
-	    $h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
-	    $h->div({'id' => 'footer'}, [
-			Klompen::footer_contents(),
-			$h->p({'id' => 'credit'}, "Proudly powered by " . $h->tag('a', {'href' => 'https://github.com/TamberP/Klompen',	'title' => 'Klompen on GitHub'}, 'Klompen') . "."),
-		    ])])]);
-    close $postH;
 }
 
 sub generate_rss {
