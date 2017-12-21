@@ -13,6 +13,7 @@ of dependencies.
    - **Date::Format**
    - **Encode**
    - **utf8::all**
+   - **Switch**
 
 ### Optional, depending on input formats
    - **Text::Markdown** *For when your input documents are Markdown formatted*
