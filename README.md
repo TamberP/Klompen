@@ -40,6 +40,9 @@ file with the following:
    http://example.com/blog/"
 * `includes`
    Directory to look in for include files.
+* `verbose`
+   if set to `true`, debugging and informational messages are printed
+   during the run.
 
 ### posts
 

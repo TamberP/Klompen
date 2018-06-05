@@ -54,11 +54,13 @@ make_path(Klompen::output_dir(), Klompen::archive_path(), Klompen::author_path()
 # Go through each post, generating them individually. :)
 foreach (@tmp){
     my $post = $_;
-    print STDERR "Generating post \"$post\": ";
-    switch(Klompen::Post::generate(Klompen::source_path($post))){
-	case -1 { print STDERR "FAILED!\n"};
-	case  0 { print STDERR "Not required.\n"};
-	case  1 { print STDERR "Done.\n"};
+    if(Klompen::verbose_p()){
+	print STDERR "Generating post \"$post\": ";
+	switch(Klompen::Post::generate(Klompen::source_path($post))){
+	    case -1 { print STDERR "FAILED!\n"};
+	    case  0 { print STDERR "Not required.\n"};
+	    case  1 { print STDERR "Done.\n"};
+	}
     }
 }
 
