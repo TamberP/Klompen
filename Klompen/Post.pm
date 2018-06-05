@@ -56,6 +56,9 @@ sub generate {
 	return -1;
     }
 
+    # If this post has no id number, grab the next one in the sequence
+    # and write it back to the post file; otherwise, strip whitespace
+    # and read it in.
     if(!defined($metadata->{'id'})){
 	$metadata->{'id'} = Klompen::next_id;
 	Klompen::write_id($path, $metadata->{'id'});
@@ -65,6 +68,8 @@ sub generate {
 	Klompen::read_id($metadata->{'id'});
     }
 
+    # Grab text from the file, either until we hit a snip line, or
+    # reach the maximum length of the preview snippet.
     my $i = 0;
     my $snippet = "";
     for(split /\n/, $article_src){

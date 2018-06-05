@@ -8,6 +8,13 @@ use HTML::Tiny;
 use JSON;
 use Klompen::Archive;
 
+=head2 sidebar_generate ( $html_object )
+
+Bundles up all the HTML for the side-bar, including header, list of
+categories, list of sidebar links, and the footer.
+
+=cut
+
 sub sidebar_generate {
     my $h = shift;
     $h->div({'id' => 'menu_header'}, [Klompen->menu_header_contents()]),
@@ -18,6 +25,15 @@ sub sidebar_generate {
     sidebar_links_list($h),
     $h->div({'id' => 'menu_footer'}, [Klompen->menu_footer_contents()])
 }
+
+=head2 sidebar_category_list ( $html_object )
+
+Creates the HTML for the list of categories, including lining to each
+category's archive page.
+
+Returns the HTML for the (unordered) list.
+
+=cut
 
 sub sidebar_category_list {
     my $h = shift;
@@ -34,8 +50,14 @@ sub sidebar_category_list {
     return $h->ul([@rslt]);
 }
 
+=head2 sidebar_links_list ( $html_object )
+
+Creates the HTML for the sidebar's list of links. Returns the HTML for
+the (unordered) list.
+
+=cut
+
 sub sidebar_links_list {
-    # Create the list of links on the sidebar.
     my $h = shift;
 
     my $src;
@@ -48,6 +70,12 @@ sub sidebar_links_list {
     $h->ul([
 	$src]);
 }
+
+=head2 doctype ( )
+
+Returns the doctype for the HTML output. (Fixed as HTML 4.01 strict.)
+
+=cut
 
 sub doctype {
     return '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">';

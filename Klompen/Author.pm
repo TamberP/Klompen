@@ -7,27 +7,46 @@ use warnings;
 use Klompen;
 use HTML::Tiny;
 
+=head1 Klompen::Author
+
+=cut
+
 # Maintain a little bit of state to ensure we don't regenerate the
 # author's profile page for every post they've uploaded.
 
 my $a_state = { };
 
-# Mark this author as having their profile page already generated.
+=head2 generated ( )
+
+Mark this author as having their profile page already generated.
+
+=cut
+
 sub generated {
     $a_state->{shift} = 1;
 }
 
-# Check whether or not the specified author has had their profile
-# generated or not.
+=head2 gen_p ( )
+
+Check whether or not the specified author has had their profile
+generated or not.
+
+=cut
+
 sub gen_p{
     return $a_state->{shift};
 }
 
+=head2 linkify ( )
+
+Turns the author's printable name (from printify) into a link to their
+author info page. This doesn't do anything to sanitise, etc, the link;
+since the only person who could insert XSS here would be the site
+owner, and they can do that /anyway/.
+
+=cut
+
 sub linkify {
-    # Turns the author's printable name (from printify) into a link to
-    # their author info page. This doesn't do anything to sanitise,
-    # etc, the link; since the only person who could insert XSS here
-    # would be the site owner, and they can do that /anyway/.
     my $author = lc(printify(shift));
 
     return HTML::Tiny->tag('a',
@@ -35,9 +54,14 @@ sub linkify {
 			    'title' => "See $author\'s profile page."}, $author);
 }
 
+=head2 printify ( $author )
+
+Convert an author's name/email tag ("Name <e@mail.host>") into a nice,
+printable piece of text.
+
+=cut
+
 sub printify {
-    # Convert an author's name/email tag ("Name <e@mail.host>") into a
-    # nice, printable piece of text.
 
     my $author_tag = shift;
     croak("Not passed an author tag to printify!") if(!defined($author_tag));
@@ -48,12 +72,18 @@ sub printify {
     return $author_tag;
 }
 
+=head2 generate ( $author )
+
+Create the profile page for the given author.  Uses the lower-cased
+printified author name to figure out where to get the file from, and
+where to put it.
+
+Only generates each author's page once per run.
+
+=cut
 
 sub generate {
     my $author = shift;
-    # Create the profile page for the given author.  Uses the
-    # lower-cased printified author name to figure out where to get
-    # the file from, and where to put it.
 
     croak("Asked to generate author profile for undefined author.")
     if(!defined($author));
