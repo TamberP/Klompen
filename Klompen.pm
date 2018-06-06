@@ -6,6 +6,7 @@ use warnings;
 use File::Spec;
 use JSON qw(decode_json encode_json);
 use URI;
+use Carp qw(croak);
 
 =head1 Klompen
 
@@ -83,12 +84,13 @@ sub output_dir {
 =head2 source_path(source_filename)
 
 Return the path of the given source file (e.g. returned from scanning
-the source directory.)
+the source directory.), or the path to the source directory if no filename is given.
 
 =cut
 
 sub source_path {
     my $fn = shift;
+    $fn = "" if(!defined($fn));
     return File::Spec->catdir(source_dir(),  $fn);
 }
 
@@ -307,12 +309,14 @@ sub author_src_path_rel {
 =head3 author_src_path($author)
 
 Returns full path to author profile input files, or to the given
-author's profile page source.
+author's profile page source if an author tag is specified.
 
 =cut
 
 sub author_src_path {
-    return File::Spec->catdir(source_path(), author_src_path_rel(shift));
+    my $author = shift;
+    $author = "" if(!defined($author));
+    return File::Spec->catdir(source_path(), author_src_path_rel($author));
 }
 
 =head2 list_source_posts( )
