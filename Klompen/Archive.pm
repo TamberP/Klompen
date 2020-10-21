@@ -161,6 +161,11 @@ sub generate {
 	print $postH $h->html([
 	    $h->head([
 		$h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
+		$h->meta ({'name' => 'Description', 'content' => "Archive of " . Klompen::site_name() . " posts."}),
+		$h->meta ({'name' => 'og:title', 'content' => $title }),
+		$h->meta ({'name' => 'og:site_name', 'content' => Klompen::site_name() }),
+		$h->meta ({'name' => 'twitter:card', 'content' => 'summary'}),
+		$h->meta ({'name' => 'twitter:description', 'content' => "Archive of " . Klompen::site_name() . " posts."}),
 		$h->title($title),
 		$h->link ({'rel' => 'stylesheet', 'type' => 'text/css',
 			   'media' => 'screen', 'href' => Klompen::style_url()})

@@ -108,6 +108,11 @@ sub generate {
 	    $h->title($h->entity_encode($metadata->{'title'}) . " | " . $h->entity_encode(Klompen::site_name())),
 	    $h->link ({'rel' => 'stylesheet', 'type' => 'text/css', 'media' => 'screen', 'href' => Klompen::style_url()}),
 	    $h->meta ({'http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'}),
+	    $h->meta ({'name' => 'Description', 'content' => $metadata->{'title'} . '.'}),
+		$h->meta ({'name' => 'og:title', 'content' => $metadata->{'title'} }),
+		$h->meta ({'name' => 'og:site_name', 'content' => Klompen::site_name() }),
+		$h->meta ({'name' => 'twitter:card', 'content' => 'summary'}),
+		$h->meta ({'name' => 'twitter:description', 'content' => 'Blog post ' . $metadata->{'title'} . '.'}),
 		 ]),
 	$h->body([
 	    Klompen->header_contents(),

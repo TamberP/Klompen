@@ -36,7 +36,13 @@ sub generate {
 	    $h->link({'rel' => 'stylesheet', 'type' => 'text/css',
 		      'media' => 'screen', 'href' => Klompen->stylesheet_url}),
 	    $h->link ({'rel' => 'alternate', 'type' => 'application/rss+xml',
-		       'title' => 'RSS', 'href' => Klompen::rss_url()})
+			   'title' => 'RSS', 'href' => Klompen::rss_url()})
+	    $h->meta ({'name' => 'Description', 'content' => Klompen::site_name() . " post listing."}),
+	    $h->meta ({'name' => 'og:title', 'content' => Klompen::site_name() . " post listing."}),
+	    $h->meta ({'name' => 'og:site_name', 'content' => Klompen::site_name() }),
+	    $h->meta ({'name' => 'twitter:card', 'content' => 'summary'}),
+	    $h->meta ({'name' => 'twitter:description', 'content' => Klompen::site_name() . " post listing."}),
+
 	    ]),
 	$h->body([
 	    Klompen->get_header_contents(),
