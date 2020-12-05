@@ -133,13 +133,14 @@ sub generate {
     # While the number of pages is less than the number of posts
     # divided by however many posts are fit to a page, keep generating
     # pages.
-    while($pagecount < ((scalar @posts) / 10)){
+    do{
 
 	if($mode eq 'index'){
 	    $filename = Klompen::output_dir() . "/index";
 	    # We don't want our default index to be 'index1', we want it
 	    # to just be 'index'.
 	    $filename = $filename . $pagecount if($pagecount > 1);
+	    print STDERR "Creating index page $pagecount.\n" if(Klompen::verbose_p());
 	    $filename = $filename . Klompen::output_ext();
 	    $title = Klompen::site_name();
 	} else {
@@ -186,7 +187,7 @@ sub generate {
 
 	# On to the next page.
 	$pagecount = $pagecount + 1;
-    }
+    } while($pagecount < ((scalar @posts) / 10));
 }
 
 =head2 generate_rss ( )
