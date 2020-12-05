@@ -670,4 +670,15 @@ sub verbose_p {
     return 0 if(!defined($config->{'verbose'}));
     return 1;
 }
+
+=head2 index_length( )
+
+Returns the number of posts per page, for indexes. Defaults to 10.
+
+=cut
+
+sub index_length {
+    return $config->{'posts'}->{'output'}->{'index_length'} || 10;
+}
+
 1;

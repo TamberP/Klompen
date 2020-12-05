@@ -129,6 +129,7 @@ sub generate {
     my $title;
     my $filename;
     my $pagecount = 1;
+    my $postcount = scalar(@posts);
 
     # While the number of pages is less than the number of posts
     # divided by however many posts are fit to a page, keep generating
@@ -155,6 +156,14 @@ sub generate {
 	    $title = Klompen::site_name() . " Archive";
 	}
 
+	my $postlimit = Klompen::index_length();
+	print STDERR "Post count: " . $postcount . "\n" if(Klompen::verbose_p());
+	if($postcount <= $postlimit){  # If we have more than index_length posts left, then we limit ourselves
+	    $postlimit = $postcount;   # to 'index_length' of them. Otherwise, we limit ourselves to however
+	}                              # many are left.
+
+	my @postslice = @posts[(($pagecount-1) * Klompen::index_length()) .. ((($pagecount-1) * Klompen::index_length()) + ($postlimit-1) )];
+	$postcount -= scalar(@postslice);
 	open($postH, ">:encoding(UTF-8)", $filename) || croak "Could not create archive/index: " . $filename;
 
 	print $postH Klompen::Site::doctype() . "\n";
@@ -175,7 +184,7 @@ sub generate {
 		Klompen::header_contents(),
 		$h->h1($title),
 		# Add links and preview text for posts (pagecount+0) to (pagecount + number of posts on a page)
-		$h->div({'id' => 'archive'},[create_links(0, undef, @posts[(($pagecount-1) * 10) .. ((($pagecount-1) * 10) + 9) ])]),
+		$h->div({'id' => 'archive'},[create_links(0, undef, @postslice)]),
 		# Add in a set of links to jump between pages.
 		$h->div({'id' => 'pageselect'}, [create_pagejump($pagecount, (scalar @posts))]),
 		$h->div({'id' => 'menu'}, [Klompen::Site::sidebar_generate($h)]),
