@@ -667,7 +667,7 @@ sub format {
 }
 
 sub verbose_p {
-    return 0 if(!defined($config->{'verbose'}));
+    return 0 if(!defined($config->{'verbose'}) || lc($config->{'verbose'}) eq 'false');
     return 1;
 }
 

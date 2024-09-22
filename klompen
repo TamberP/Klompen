@@ -40,15 +40,13 @@ make_path(Klompen::output_dir(), Klompen::archive_path(), Klompen::author_path()
 # Go through each post, generating them individually. :)
 foreach (@tmp){
     my $post = $_;
-    if(Klompen::verbose_p()){
-	print STDERR "Generating post \"$post\": ";
+    print STDERR "Generating post \"$post\": " if(Klompen::verbose_p());
 	switch(Klompen::Post::generate(Klompen::source_path($post))){
-	    case -1 { print STDERR "FAILED!\n"};
-	    case  0 { print STDERR "Not required.\n"};
-	    case  1 { print STDERR "Done.\n"};
+	    case -1 { print STDERR "FAILED!\n" if(Klompen::verbose_p())};
+	    case  0 { print STDERR "Not required.\n" if(Klompen::verbose_p())};
+	    case  1 { print STDERR "Done.\n" if(Klompen::verbose_p())};
 	}
     }
-}
 
 # Generate the index/archive pages (List of posts, in reverse
 # chronological order.) This also includes the tag-archives, which are
