@@ -122,9 +122,10 @@ sub generate {
 		 ]),
 	$h->body([
 	    Klompen->header_contents(),
+	    $h->h1({'id' => 'post_title'}, $h->entity_encode($metadata->{'title'})),
 	    $h->tag('a', {'href' => Klompen::base_url(),
-			  'title' => "Back to " . Klompen::site_name() . '.'}, 
-		    $h->h1({'id' => 'post_title'}, $h->entity_encode($metadata->{'title'}))),
+			      'title' => "Return to " . Klompen::site_name() . '.'}, "(&larr; Return to " . Klompen::site_name() .")"),
+	    $h->br(),
 	    $h->div({'id' => 'meta'}, [
 			"Filed under: " . 
 			$h->span({'id' => 'post-tags'}, linkify_tags($metadata->{'tags'})) . " by " . 
