@@ -587,8 +587,8 @@ feed, or the default of 10.
 =cut
 
 sub rss_limit {
-    if(defined($config->{'output'}->{'rss'}->{'limit'})){
-	return $config->{'output'}->{'rss'}->{'limit'};
+    if(defined($config->{'posts'}->{'output'}->{'rss_limit'})){
+	return $config->{'posts'}->{'output'}->{'rss_limit'};
     } else {
 	return 10;
     }

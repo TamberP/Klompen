@@ -287,16 +287,18 @@ sub create_links {
     foreach(@posts){
 	{
 	    if($rss){
-		last if($postcount > Klompen->rss_limit());
-
 		# RSS feed mode: Add this item to the RSS feed, then
 		# skip to the next item without doing any other
 		# generation.
-		$rss->add_item(link        => Klompen::archive_url($_->{'id'}),
-			       title       => $_->{'title'},
-			       description => Klompen::format($_->{'preview'} . "-- [Read More]"),
-			       dc => { date => strftime("%Y-%m-%dT%H:%M:%S%z", localtime($_->{'date'}))});
-		$poastcount += 1;
+		if($poastcount < Klompen->rss_limit()){
+		    $rss->add_item(link        => Klompen::archive_url($_->{'id'}),
+				   title       => $_->{'title'},
+				   description => Klompen::format($_->{'preview'} . "-- [Read More]"),
+				   dc => { date => strftime("%Y-%m-%dT%H:%M:%S%z", localtime($_->{'date'}))});
+		    $poastcount += 1;
+		} else {
+		    last;
+		}
 		next;
 	    }
 
