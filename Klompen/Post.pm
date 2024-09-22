@@ -68,6 +68,12 @@ sub generate {
 	Klompen::read_id($metadata->{'id'});
     }
 
+    # If the post metadata doesn't specify what markdown format it's
+    # in, set it to be using the default.
+    if(!defined($metadata->{'format'})){
+	$metadata->{'format'} = Klompen::input_format()
+    }
+
     # Grab text from the file, either until we hit a snip line, or
     # reach the maximum length of the preview snippet.
     my $i = 0;
