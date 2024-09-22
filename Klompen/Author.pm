@@ -84,6 +84,7 @@ Only generates each author's page once per run.
 
 sub generate {
     my $author = shift;
+    $author =~ s/\s+$//;
 
     croak("Asked to generate author profile for undefined author.")
     if(!defined($author));
