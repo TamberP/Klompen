@@ -1,7 +1,7 @@
 package Klompen::Archive;
 
 use HTML::Tiny;
-use XML::RSS::SimpleGen;
+use XML::RSS;
 use Klompen;
 use Klompen::Site;
 use POSIX qw(strftime ceil);
@@ -207,11 +207,13 @@ order, and creates an RSS feed from C<rss_limit> of them.
 =cut
 
 sub generate_rss {
-    my $rss = XML::RSS::SimpleGen->new(Klompen->base_url(),
-				       Klompen->site_name());
+    my $rss = XML::RSS->new();
+    $rss->channel(link=>Klompen->base_url(),
+		  title=>Klompen->site_name(),
+		  description=>"Post feed for " . Klompen->site_name() . ".");
+
     # Sort posts in reverse chronological order
     my @posts = sort { $b->{'date'} cmp $a->{'date'} } @post_stack;
-    $rss->item_limit(Klompen->rss_limit());
 
     create_links(1, $rss, @posts);
 
@@ -281,13 +283,20 @@ sub create_links {
     # date.
     my $last_month = -1;
     my $str = '';
+    my $poastcount;
     foreach(@posts){
 	{
 	    if($rss){
+		last if($postcount > Klompen->rss_limit());
+
 		# RSS feed mode: Add this item to the RSS feed, then
 		# skip to the next item without doing any other
 		# generation.
-		$rss->item(Klompen::archive_url($_->{'id'}), $_->{'title'}, Klompen::format($_->{'preview'}));
+		$rss->add_item(link        => Klompen::archive_url($_->{'id'}),
+			       title       => $_->{'title'},
+			       description => Klompen::format($_->{'preview'} . "-- [Read More]"),
+			       dc => { date => strftime("%Y-%m-%dT%H:%M:%S%z", localtime($_->{'date'}))});
+		$poastcount += 1;
 		next;
 	    }
 

@@ -8,7 +8,7 @@ of dependencies.
    - **JSON** *State saving, configuration*
    - **File::Path** *Output folder creation*
    - **File::Slurp** *Reading in and writing out files*
-   - **XML::RSS::SimpleGen** *RSS Feed generation*
+   - **XML::RSS** *RSS Feed generation*
    - **File::Spec** *File modification time, for incremental updates*
    - **Date::Format**
    - **Encode**
@@ -42,7 +42,8 @@ file with the following:
    Directory to look in for include files.
 * `verbose`
    if set to `true`, debugging and informational messages are printed
-   during the run.
+   during the run. If set to `false`, or does not exist, then only errors
+   will be printed.
 
 ### posts
 
