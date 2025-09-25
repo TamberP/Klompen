@@ -175,7 +175,10 @@ sub generate {
 		$h->meta ({'name' => 'og:title', 'content' => $title }),
 		$h->meta ({'name' => 'og:site_name', 'content' => Klompen::site_name() }),
 		$h->meta ({'name' => 'twitter:card', 'content' => 'summary'}),
-		$h->meta ({'name' => 'twitter:description', 'content' => "Archive of " . Klompen::site_name() . " posts."}),
+		$h->meta ({'name' => 'twitter:description', 'content' => "Archive of " . Klompen::site_name() . " posts, page " . $pagecount . "."}),
+		$h->meta ({'name' => 'og:description', 'content' => "Archive of " . Klompen::site_name() . " posts, page " . $pagecount . "."}),
+		$h->meta ({'name' => 'og:image', 'content' => Klompen->thumbnail_url}),
+		$h->meta ({'name' => 'twitter:image', 'content' => Klompen->thumbnail_url}),
 		$h->title($title),
 		$h->link ({'rel' => 'stylesheet', 'type' => 'text/css',
 			   'media' => 'screen', 'href' => Klompen::style_url()})

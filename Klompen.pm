@@ -181,6 +181,21 @@ sub style_url {
     }
 }
 
+=head2 thumbnail_url( )
+
+Returns the fully-qualified URL to the thumbnail image for the site
+
+=cut
+
+sub thumbnail_url {
+    my $thumbnail = $config->{'posts'}->{'output'}->{'urls'}->{'thumbnail'};
+    if($thumbnail =~ m/^https?:\/\//i){
+	return $thumbnail
+    } else {
+	return base_url() . "/$thumbnail";
+    }
+}
+
 =head2 Tags
 
 =head3 tag_path_rel( )

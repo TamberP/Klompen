@@ -34,14 +34,17 @@ sub generate {
 		       'content' => 'text/html; charset=UTF-8'}),
 	    $h->title($h->entity_encode(Klompen->conf_site_name)),
 	    $h->link({'rel' => 'stylesheet', 'type' => 'text/css',
-		      'media' => 'screen', 'href' => Klompen->stylesheet_url}),
+		      'media' => 'screen', 'href' => Klompen->style_url}),
 	    $h->link ({'rel' => 'alternate', 'type' => 'application/rss+xml',
 			   'title' => 'RSS', 'href' => Klompen::rss_url()})
 	    $h->meta ({'name' => 'Description', 'content' => Klompen::site_name() . " post listing."}),
 	    $h->meta ({'name' => 'og:title', 'content' => Klompen::site_name() . " post listing."}),
 	    $h->meta ({'name' => 'og:site_name', 'content' => Klompen::site_name() }),
 	    $h->meta ({'name' => 'twitter:card', 'content' => 'summary'}),
-	    $h->meta ({'name' => 'twitter:description', 'content' => Klompen::site_name() . " post listing."}),
+	    $h->meta ({'name' => 'twitter:description', 'content' => Klompen::site_name() . " posts"}),
+	    $h->meta ({'name' => 'og:description', 'content' => Klompen::site_name() . " posts"}),
+	    $h->meta ({'name' => 'og:image', 'content' => Klompen->thumbnail_url}),
+	    $h->meta ({'name' => 'twitter:image', 'content' => Klompen->thumbnail_url}),
 
 	    ]),
 	$h->body([
